@@ -18,7 +18,15 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            // $table->timestamps();
+            $table->tinyInteger('is_active');
+            $table->tinyInteger('is_delete');
+            $table->timestamp('last_login_at');
+            $table->varchar('last_login_at');
+            $table->timestamp('created_at');
+            $table->timestamp('updated_at');
             $table->timestamps();
+
         });
     }
 

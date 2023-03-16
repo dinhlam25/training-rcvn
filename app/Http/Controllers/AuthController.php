@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
+use App\Http\Requests\RegisterRequest;
 use Carbon\Carbon;
+use Illuminate\Auth\Events\Login;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
@@ -35,14 +39,9 @@ class AuthController extends Controller
     //     $this->middleware('auth:api', ['except' => ['login','register']]);
     // }
 
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-        ]);
         $credentials = $request->only('email', 'password');
-
 
         if (!Auth::attempt($credentials)) {
             return response()->json([
@@ -56,20 +55,16 @@ class AuthController extends Controller
         return response()->json([
             'status' => 'success',
             'token' => $token,
+            'user' => $user,
             'type' => 'bearer by passport',
             // 'user' => $user,
 
         ]);
     }
 
-    public function register(Request $request)
+    public function register(RegisterRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-        ]);
-
+ 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -82,10 +77,10 @@ class AuthController extends Controller
             'status' => 'success',
             'message' => 'User created successfully',
             'user' => $user,
-            'authorisation' => [
-                'token' => $token,
-                'type' => 'bearer',
-            ]
+            // 'authorisation' => [
+            //     'token' => $token,
+            //     'type' => 'bearer',
+            // ]
         ]);
     }
 
@@ -111,6 +106,7 @@ class AuthController extends Controller
 
         ]);
     }
+
     public function getMe()
     {
         $user = Auth::user();
