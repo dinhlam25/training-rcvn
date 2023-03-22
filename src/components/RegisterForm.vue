@@ -1,6 +1,6 @@
 <template>
   <h1>REGISTER PAGE</h1>
-  <form @submit.prevent="storeRegisterInfo">
+  <form @submit.prevent="storeRegisterInfo" class="container">
     <div class="form-group">
       <label>name</label>
       <input type="text" class="form-control" v-model="params.name" placeholder="Enter your">

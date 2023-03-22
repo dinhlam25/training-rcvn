@@ -1,5 +1,6 @@
 <template>
     
+    <h1>Table of user</h1>
 </template>
 
 <script setup>

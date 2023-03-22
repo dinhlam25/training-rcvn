@@ -2,9 +2,6 @@
     <h1>Error page from view</h1>
     <Error/>
     <Error/>
-    <Error/>
-    <Error/>
-    <Error/>
 </template>
 
 <script setup>

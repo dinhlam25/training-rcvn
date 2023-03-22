@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios';
 
 export const useUser = defineStore({
@@ -30,13 +29,10 @@ export const useUser = defineStore({
         //     }
         // },
         handleClick() {
-            {
-                const router = useRouter();
                 this.user = null;
                 this.token = null;                
                 localStorage.removeItem('token');
-                router.push('/');
-            }
+                // router.push('login');
         }
     }
     // actions:
