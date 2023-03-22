@@ -7,7 +7,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
-use Carbon\Carbon;
+use App\Http\Resources\UserOverviewCollection;
+use App\Http\Resources\UserResource;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
@@ -25,13 +26,17 @@ class AuthController extends Controller
      */
     public function hello()
     {
-        return response()->json(
-            [
-                'id' => 1,
-                'title' => 'love y',
-                'mes' => 'dinhlam'
-            ],
-        );
+        // $users = User::all()->orderBy('id');
+        $check = User::get()->count();
+        if ($check === 0) {
+            return response()->json([
+                "success" => false,
+                "errors" => "Danh sách người dùng hiện đang trống."
+            ]);
+        }
+
+        $users = User::paginate(10);
+        return UserResource::collection($users);
     }
 
     // public function __construct()
