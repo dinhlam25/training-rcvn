@@ -17,16 +17,19 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Passport\Passport;
 
-class AuthController extends Controller
+class UserAuthController extends Controller
 {
     /**
      * Create User
      * @param Request $request
      * @return User 
      */
-    public function hello()
+    //  public function __construct()
+    //  {
+    //      $this->middleware('auth:api', ['except' => ['login','register']]);
+    //  }
+    public function hello(Request $request)
     {
-        // $users = User::all()->orderBy('id');
         $check = User::get()->count();
         if ($check === 0) {
             return response()->json([
@@ -38,11 +41,6 @@ class AuthController extends Controller
         $users = User::paginate(10);
         return UserResource::collection($users);
     }
-
-    // public function __construct()
-    // {
-    //     $this->middleware('auth:api', ['except' => ['login','register']]);
-    // }
 
     public function login(LoginRequest $request)
     {
@@ -69,7 +67,7 @@ class AuthController extends Controller
 
     public function register(RegisterRequest $request)
     {
- 
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -92,11 +90,10 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         // auth('web')->logout();
-            return response()->json([
+        return response()->json([
             'status' => 'success',
             'message' => 'Successfully logged out',
         ]);
-
     }
 
     public function refresh()
@@ -112,9 +109,47 @@ class AuthController extends Controller
         ]);
     }
 
-    public function getMe()
+    // public function filter(Request $request)
+    // {
+    //     $user = User::query()
+    //         ->whereName($request->name)
+    //         ->email($request)
+    //         ->group($request)
+    //         ->status($request);
+
+    //     $user = $this->filters($request);
+    //     return response()->json([
+    //         'user' => $user
+    //     ]);
+    // }
+
+    public function filter(Request $request)
     {
-        $user = Auth::user();
-        return response()->json($user, 200);
+        // dd($request->all());
+        $user = User::query();
+
+        if ($request->filled('name')) {
+            $user->where('name', 'LIKE', '%' . $request->name . '%');
+                
+        }
+        if($request->filled('email')){
+            $user->where('email', 'LIKE', '%' . $request->email . '%');
+        }
+
+        if($request->filled('group')){
+            $user->where('department','=',$request->group);
+        }
+
+        if($request->filled('status')){
+            $user->where('is_active','=',$request->status);
+        }
+
+        $user = $user->paginate(10);
+        return UserResource::collection($user);
+
+        return response()->json([
+            "success" => false,
+            "errors" => "khong tim thay user"
+        ]);
     }
 }
