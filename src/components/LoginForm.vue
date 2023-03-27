@@ -97,7 +97,7 @@ export default {
 
       const response =  await axios.post('auth/login', params)
         .catch(error => alert('Login Failed! Please try again'))
-
+      // console.log(response)
       storeUser.setUser(response.data.user)
       storeUser.setToken(response.data.token)
 

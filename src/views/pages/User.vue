@@ -15,85 +15,77 @@
     <div class="container">
       <!-- Searching -->
       <div class="row">
-        <div class="col-3"><p class="text-uppercase font-weight-bold">Tên</p></div>
-        <div class="col-3"><p class="text-uppercase font-weight-bold">Email</p></div>
-        <div class="col-3"><p class="text-uppercase font-weight-bold">Nhóm</p></div>
-        <div class="col-3"><p class="text-uppercase font-weight-bold">Trạng thái</p></div>   
+        <div class="col-3">
+          <p class="text-uppercase font-weight-bold">Tên</p>
+        </div>
+        <div class="col-3">
+          <p class="text-uppercase font-weight-bold">Email</p>
+        </div>
+        <div class="col-3">
+          <p class="text-uppercase font-weight-bold">Nhóm</p>
+        </div>
+        <div class="col-3">
+          <p class="text-uppercase font-weight-bold">Trạng thái</p>
+        </div>
       </div>
-      <div class="row">     
+      <div class="row">
         <div class="input-group mb-3 col-3 dropdown">
-          <input v-model="search" type="text" name="" id="" class="search-input" placeholder="Nhập họ tên">
+          <input v-model="paramsSearch.name" type="text" name="" id="" class="search-input" placeholder="Nhập họ tên">
         </div>
 
         <div class="input-group mb-3 col-3 dropdown">
-          <input type="text" name="" id="" class="search-input" placeholder="Nhập email">
+          <input v-model="paramsSearch.email" type="text" name="" id="" class="search-input" placeholder="Nhập email">
         </div>
 
-        <div class="input-group mb-3 col-3 dropdown">
-          <input type="text" class="form-control" aria-label="Text input with dropdown button" placeholder="Chọn nhóm">
-          <div class="input-group-append">
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown"
-              aria-expanded="false"></button>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="#">admin</a></li>
-              <li><a class="dropdown-item" href="#">editor</a></li>
-              <li><a class="dropdown-item" href="#">reviewer</a></li>
-            </ul>
-          </div>
+        <div class="input-group mb-3 col-3">
+          <select v-model="paramsSearch.group" class="form-control" id="exampleFormControlSelect1">
+            <option value="">Chọn nhóm</option>
+            <option value="admin">admin</option>
+            <option value="editor">editor</option>
+            <option value="reviewer">reviewer</option>
+          </select>
         </div>
 
-        <div class="input-group mb-3 col-3 dropdown">
-          <input type="text" class="form-control" aria-label="Text input with dropdown button"
-            placeholder="Chọn trạng thái">
-          <div class="input-group-append">
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown"
-              aria-expanded="false"></button>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li><a class="dropdown-item" href="#">Đang hoạt động</a></li>
-              <li><a class="dropdown-item" href="#">Tạm khóa</a></li>
-            </ul>
-          </div>
+        <div class="input-group mb-3 col-3">
+          <select v-model="paramsSearch.status" class="form-control" id="exampleFormControlSelect1">
+            <option value="">Chọn trạng thái</option>
+            <option value="1">Đang hoạt động</option>
+            <option value="0">Tạm khóa</option>
+          </select>
         </div>
-
-      </div>    
-        <hr>
-        <!-- Add Search and delete search btn-->
+      </div>
+      <hr>
+      <!-- Add Search and delete search btn-->
       <div class="row d-flex bd-highlight mb-3">
-        <button type="button" class="col-2 btn btn-primary btn-lg mr-auto p-2 bd-highlight">Thêm mới</button>
-        <button type="button" class="col-2 btn btn-primary btn-lg p-2 bd-highlight">Tìm kiếm</button>
-        <button type="button" class="col-2 ml-5 btn btn-warning btn-lg p-2 bd-highlight">Xóa tìm</button>
+        <button data-toggle="modal" data-target="#myModal" type="button"
+          class="col-2 btn btn-primary btn-lg mr-auto p-2 bd-highlight">Thêm mới</button>
+        <button @click="() => handleSearch()" type="button" class="col-2 btn btn-primary btn-lg p-2 bd-highlight">Tìm
+          kiếm</button>
+        <button @click="() => handleSearch(1, {})" type="button"
+          class="col-2 ml-5 btn btn-warning btn-lg p-2 bd-highlight">Xóa tìm</button>
       </div>
+      <!-- Modal Manager User -->
+      <ManagerUser :edit="user" @save="clickAdd,clickEdit" />
+
       <!-- Pagination -->
       <div class="d-flex justify-content-center">
-        <nav aria-label="Page navigation example" class="">
-          <ul class="pagination">
-            <li class="page-item">
-              <a class="page-link" href="#" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-            <li class="page-item"><a class="page-link" href="#">2</a></li>
-            <li class="page-item"><a class="page-link" href="#">3</a></li>
-            <li class="page-item"><a class="page-link" href="#">4</a></li>
-            <li class="page-item"><a class="page-link" href="#">5</a></li>
-            <li class="page-item"><a class="page-link" href="#">6</a></li>
-            <li class="page-item"><a class="page-link" href="#">7</a></li>
-            <li class="page-item"><a class="page-link" href="#">8</a></li>
-            <li class="page-item">
-              <a class="page-link" href="#" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
+        <paginate v-model="curPageUser" :page-count="lastPageUser" :page-range="4" :margin-pages="2"
+          :click-handler="handleSearch" :prev-text="'&laquo;'" :next-text="'&raquo;'" :container-class="'pagination'"
+          :page-class="'page-item'">
+
+        </paginate>
       </div>
-   <hr>
-   <!-- table list user -->
+      <!--Count User -->
+      <div class="d-flex justify-content-end">
+        <p>Hiển thị <strong>{{ fromUser }} ~ {{ toUser }}</strong> trong tổng số <strong>{{ totalUser }}</strong> users
+        </p>
+      </div>
+      <hr>
+      <!-- table list user -->
       <div class="row">
         <div class="col-md-12">
           <div class="card-login">
- 
+
             <div class="table-responsive">
               <table class="table no-wrap user-table mb-0">
                 <!-- <th scope="col" class="border-0 text-uppercase font-medium pl-4">{{ user.key[0] }}</th> -->
@@ -112,7 +104,7 @@
 
                   </tr>
                 </thead>
-                <tbody v-for="(user, id) in filteredName" :key="id">
+                <tbody v-for="(user, id) in users" :key="id">
                   <tr>
                     <td class="">{{ user.id }}</td>
                     <!-- <td v-for="(item,i) in filteredItems" :key="i" class="col-2"> -->
@@ -131,23 +123,19 @@
 
                     </td>
                     <td class="col-2">
-                      <!-- <select class="form-control category-select" id="exampleFormControlSelect1">
-      <option>Admin</option>
-      <option>Editor</option>
-      <option>Reviewer</option>
-    </select> -->
+
                       <span class="text-muted">{{ user.status }}</span>
 
                     </td>
                     <td class="col-3">
-                      <button type="button" class="btn btn-outline-info btn-circle btn btn-circle"><i
-                          class="fa fa-key"></i> </button>
-                      <button type="button" class="btn btn-outline-info btn-circle btn btn-circle ml-2"><i
-                          class="fa fa-trash"></i> </button>
-                      <button type="button" class="btn btn-outline-info btn-circle btn btn-circle ml-2"><i
-                          class="fa fa-edit"></i> </button>
-                      <button type="button" class="btn btn-outline-info btn-circle btn btn-circle ml-2"><i
-                          class="fa fa-upload"></i> </button>
+                      <button @click="clickEdit(user)" data-toggle="modal" data-target="#myModal" type="button"
+                        class="btn btn-outline-info btn-circle btn btn-circle"><i class="fa fa-edit"></i> </button>
+                      <button @click="clickStatus(user)" type="button"
+                        class="btn btn-outline-info btn-circle btn btn-circle ml-3"><i class="fa fa-key"></i> </button>
+                      <button @click="clickDelete(user)" type="button"
+                        class="btn btn-outline-info btn-circle btn btn-circle ml-3"><i class="fa fa-trash"></i> </button>
+                      <!-- <button type="button" class="btn btn-outline-info btn-circle btn btn-circle ml-2"><i
+                          class="fa fa-upload"></i> </button> -->
                     </td>
                   </tr>
                 </tbody>
@@ -163,37 +151,112 @@
   </html>
 </template>
 <script>
+import Paginate from 'vuejs-paginate-next'
 import axios from 'axios'
-import { reactive } from 'vue'
+import { reactive, ref } from 'vue'
+import ManagerUser from '../../components/User/ManagerUser.vue'
 
 export default {
   data() {
     return {
+      user: {},
       users: null,
-      search: ''
+      fullDataUser: null,
+
+
+      curPageUser: 1,
+      fromUser: null,
+      toUser: null,
+      totalUser: null,
     }
+  },
+  components: {
+    paginate: Paginate,
+    ManagerUser,
   },
   setup() {
-    // user = reactive(null)
+    const paramsSearch = reactive({ name: "", email: "", group: "", status: "" })
+    const lastPageUser = ref(1)
+
+    return { paramsSearch, lastPageUser }
   },
-  async created() {
-    await axios.get('http://127.0.0.1:8000/api/hello')
-      .then(res => (this.users = res.data.data))
-    // .then(res => (console.log(res.data)))
-    // .catch(alert('lỗi rồi'))
+
+  created() {
+    this.handleSearch();
+  },
+  methods: {
+
+    async handleSearch(page = 1, paramsSearch = this.paramsSearch,) {
+      const response = await axios.get('hello', { params: { ...paramsSearch, page } })
+        .then(res => {
+          const { data, meta } = res.data;
+
+          // const data = res.data.data
+          // const meta = res.data.meta
+
+          this.users = data
+          this.curPageUser = meta.current_page
+          this.fromUser = meta.from
+          this.toUser = meta.to
+          this.totalUser = meta.total
+          this.lastPageUser = meta.last_page
+          // console.log('data on start :', res.data)
+
+        })
+        .catch(error => {
+          console.log(error)
+          alert('Delete Search Failed! Please try again')
+        })
+    },
+    async handleSubmit(paramsUser) {
+      const response = await axios.post('auth/registerByRoot',paramsUser)
+                                  .then(res => {alert('Submit success'); this.handleSearch()})
+                                  .catch(error => alert(error))
+    },
+    // async handleUpdate(paramsUser) {
+    //   const response = await axios.post('auth/updateByRoot',paramsUser)
+    //                               .then(res => {alert('Submit success'); this.handleSearch()})
+    //                               .catch(error => alert(error))
+    // },
+ 
+    clickAdd(newUser) {
+      let index = this.users.findIndex((c) => c.id === newUser.id)
+      if(index >= 0){
+        this.users.splice(index,1,newUser)
+      }
+      else {
+        this.handleSubmit(newUser)
+        // this.handleSearch()
+        // this.users.unshift(newUser)
+      }
+      // console.log(newUser)
+      
+    },
+    clickEdit(editUser) {
+      this.user = editUser
+      // this.handleUpdate(this.user)
+      // console.log(editUser)
+    },
+    clickStatus(statusUser) {
+      // console.log(statusUser.status)
+    },
+    clickDelete(deleteUser) {
+      // console.log(deleteUser)
+    }
   },
   computed: {
-    filteredName() {
-      if(this.search.trim().length > 0){
-        return this.users.filter((user) => user.name.toLowerCase().includes
-        (this.search.trim()))
-      }
-      return this.users
+
+  },
+  watch: {
+    
+    // deep: true
+      // this.handleUpdate(editUser)
+      // this.handleSearch()
+      // console.log('Watch edit run')
     }
   }
-}
 
-// return { user }
+
 </script>
 <style type="text/css">
 body {
@@ -212,10 +275,12 @@ body {
   border: 0 solid transparent;
   border-radius: 0;
 }
+
 .search-input {
   width: 300px;
   border-radius: 3px;
 }
+
 .btn-circle.btn-lg,
 .btn-group-lg>.btn-circle.btn {
   width: 50px;
@@ -246,5 +311,9 @@ button:not(:disabled) {
 .user-table tbody tr .category-select {
   max-width: 150px;
   border-radius: 20px;
+}
+
+.modal-backdrop {
+  z-index: -1;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-    <div >
+    <div>
         <ul v-if="!storeUser.user">
             <li>
                 <router-link to="/">HomePage </router-link>
@@ -13,31 +13,33 @@
         </ul>
         <ul v-else>
             <li>
-                <a href="javascript:void(0)" @click="storeUser.handleClick">Logout</a>
+                <button class="btn btn-primary" @click="handleClick">Logout</button>
             </li>
         </ul>
     </div>
 </template>
-<script setup>
-import { useUser } from '@/stores/useUser'
-const storeUser = useUser()
-
-
-    // const token = storeUser.token
-</script>
 <script>
-    import { useRouter } from 'vue-router'
-    export default {
-        setup() {
-            const router = useRouter();
-            return { router }
-        },
-        watch: {
-            handleClick() {
-                router.push('/login')
-            }
+import { useRouter } from 'vue-router'
+import { useUser } from '@/stores/useUser'
+export default {
+    setup() {
+        const router = useRouter();
+        const storeUser = useUser();
+        const handleClick = () => {
+            //remove token local storage
+            localStorage.removeItem('token');
+            // set user`
+            //set token
+            storeUser.token = storeUser.setToken(null)
+            storeUser.user = storeUser.setUser(null)
+            // redirect login
+            router.push('/login')
+
         }
-    }
+        return { router, handleClick, storeUser }
+    },
+
+}
 
 
 </script>

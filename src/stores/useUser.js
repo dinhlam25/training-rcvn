@@ -1,5 +1,4 @@
 import { defineStore } from "pinia";
-import axios from 'axios';
 
 export const useUser = defineStore({
     id: "user",
@@ -28,12 +27,5 @@ export const useUser = defineStore({
         //         console.log(error)
         //     }
         // },
-        handleClick() {
-                this.user = null;
-                this.token = null;                
-                localStorage.removeItem('token');
-                // router.push('login');
-        }
     }
-    // actions:
 })
