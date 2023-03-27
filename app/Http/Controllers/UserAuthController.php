@@ -30,18 +30,32 @@ class UserAuthController extends Controller
     //  }
     public function hello(Request $request)
     {
-        $check = User::get()->count();
-        if ($check === 0) {
-            return response()->json([
-                "success" => false,
-                "errors" => "Danh sách người dùng hiện đang trống."
-            ]);
+        // dd($request->all());
+        $user = User::query();
+
+        if ($request->filled('name')) {
+            $user->where('name', 'LIKE', '%' . $request->name . '%');
+        }
+        if ($request->filled('email')) {
+            $user->where('email', 'LIKE', '%' . $request->email . '%');
         }
 
-        $users = User::paginate(10);
-        return UserResource::collection($users);
-    }
+        if ($request->filled('group')) {
+            $user->where('department', '=', $request->group);
+        }
 
+        if ($request->filled('status')) {
+            $user->where('is_active', '=', $request->status);
+        }
+
+        $user = $user->paginate(10);
+        return UserResource::collection($user);
+
+        return response()->json([
+            "success" => false,
+            "errors" => "khong tim thay user"
+        ]);
+    }
     public function login(LoginRequest $request)
     {
         $credentials = $request->only('email', 'password');
@@ -86,6 +100,68 @@ class UserAuthController extends Controller
             // ]
         ]);
     }
+    public function registerByRoot(RegisterRequest $request)
+    {
+        // dd($request->all());
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make('04092001'),
+            'department' => $request->group,
+            'is_active' => $request->status === 'Active' ? 1 : 0
+        ]);
+        if ($user) {
+            $user->refresh();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User created successfully',
+                'user' => [
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'group' => $user->department,
+                    'last_login' => $user->last_login_at,
+                    'is_active' => $user->is_active,
+                ]
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'User created failed',
+            ]);
+        }
+    }
+
+    public function updateByRoot(Request $request){
+        $user = User::where('email',$request->email)->first();
+        $user->update([
+                        'name' => $request->name ,
+                        'email' => $request->email ,
+                        'department' => $request->group ,
+                        'is_active' => $request->status === 'Active'? 1 : 0,
+                        // 'last_login' => $user->last_login_at,
+                        // 'is_delete' => $request->is_delete
+                    ]);
+        
+        if ($user) {
+            $user->refresh();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User update successfully',
+                'user' => [
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'group' => $user->department,
+                    'last_login' => $user->last_login_at,
+                    'is_active' => $user->is_active,
+                ]
+            ]);
+        } else {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'User update failed',
+            ]);
+        }
+    }
 
     public function logout(Request $request)
     {
@@ -106,50 +182,6 @@ class UserAuthController extends Controller
             'token' => Passport::refreshToken(),
             'type' => 'bearer',
 
-        ]);
-    }
-
-    // public function filter(Request $request)
-    // {
-    //     $user = User::query()
-    //         ->whereName($request->name)
-    //         ->email($request)
-    //         ->group($request)
-    //         ->status($request);
-
-    //     $user = $this->filters($request);
-    //     return response()->json([
-    //         'user' => $user
-    //     ]);
-    // }
-
-    public function filter(Request $request)
-    {
-        // dd($request->all());
-        $user = User::query();
-
-        if ($request->filled('name')) {
-            $user->where('name', 'LIKE', '%' . $request->name . '%');
-                
-        }
-        if($request->filled('email')){
-            $user->where('email', 'LIKE', '%' . $request->email . '%');
-        }
-
-        if($request->filled('group')){
-            $user->where('department','=',$request->group);
-        }
-
-        if($request->filled('status')){
-            $user->where('is_active','=',$request->status);
-        }
-
-        $user = $user->paginate(10);
-        return UserResource::collection($user);
-
-        return response()->json([
-            "success" => false,
-            "errors" => "khong tim thay user"
         ]);
     }
 }

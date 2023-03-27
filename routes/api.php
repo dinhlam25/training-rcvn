@@ -16,10 +16,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/auth/register', [UserAuthController::class, 'register']);
+Route::post('/auth/registerByRoot', [UserAuthController::class, 'registerByRoot']);
+Route::post('/auth/updateByRoot', [UserAuthController::class, 'updateByRoot']);
 Route::post('/auth/login', [UserAuthController::class, 'login']);
 
 Route::get('/hello', [UserAuthController::class, 'hello']);
-Route::get('/filter', [UserAuthController::class, 'filter']);
 
 Route::middleware('auth:api')->group(function () {
     // Route::get('/auth/info', [UserAuthController::class, 'getMe']);
