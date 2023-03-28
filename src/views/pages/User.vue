@@ -58,14 +58,17 @@
       <!-- Add Search and delete search btn-->
       <div class="row d-flex bd-highlight mb-3">
         <button data-toggle="modal" data-target="#myModal" type="button"
-          class="col-2 btn btn-primary btn-lg mr-auto p-2 bd-highlight">Thêm mới</button>
+          class="col-2 btn btn-primary btn-lg mr-auto p-2 bd-highlight" @click="clearUser()">Thêm mới</button>
         <button @click="() => handleSearch()" type="button" class="col-2 btn btn-primary btn-lg p-2 bd-highlight">Tìm
           kiếm</button>
         <button @click="() => handleSearch(1, {})" type="button"
           class="col-2 ml-5 btn btn-warning btn-lg p-2 bd-highlight">Xóa tìm</button>
       </div>
+
       <!-- Modal Manager User -->
-      <ManagerUser :edit="user" @save="clickAdd,clickEdit" />
+      <ManagerUser :edit="user" @update:reload="handleSearch()" @update:save="clickAdd" />
+      <SetStatus :userData="user" @update:reload="handleSearch()" />
+      <DeleteUser :userData="user" @update:reload="handleSearch()"/>
 
       <!-- Pagination -->
       <div class="d-flex justify-content-center">
@@ -128,11 +131,11 @@
 
                     </td>
                     <td class="col-3">
-                      <button @click="clickEdit(user)" data-toggle="modal" data-target="#myModal" type="button"
+                      <button @click="clickEdit(user)" data-toggle="modal" data-target="#ModalUpdateUser" type="button"
                         class="btn btn-outline-info btn-circle btn btn-circle"><i class="fa fa-edit"></i> </button>
-                      <button @click="clickStatus(user)" type="button"
+                      <button @click="clickStatus(user)" data-toggle="modal" data-target="#ModalStatus" type="button"
                         class="btn btn-outline-info btn-circle btn btn-circle ml-3"><i class="fa fa-key"></i> </button>
-                      <button @click="clickDelete(user)" type="button"
+                      <button @click="clickDelete(user)"  data-toggle="modal" data-target="#ModalDelete" type="button"
                         class="btn btn-outline-info btn-circle btn btn-circle ml-3"><i class="fa fa-trash"></i> </button>
                       <!-- <button type="button" class="btn btn-outline-info btn-circle btn btn-circle ml-2"><i
                           class="fa fa-upload"></i> </button> -->
@@ -155,6 +158,8 @@ import Paginate from 'vuejs-paginate-next'
 import axios from 'axios'
 import { reactive, ref } from 'vue'
 import ManagerUser from '../../components/User/ManagerUser.vue'
+import SetStatus from '../../components/User/SetStatus.vue'
+import DeleteUser from '../../components/User/DeleteUser.vue'
 
 export default {
   data() {
@@ -173,6 +178,8 @@ export default {
   components: {
     paginate: Paginate,
     ManagerUser,
+    SetStatus,
+    DeleteUser
   },
   setup() {
     const paramsSearch = reactive({ name: "", email: "", group: "", status: "" })
@@ -187,7 +194,7 @@ export default {
   methods: {
 
     async handleSearch(page = 1, paramsSearch = this.paramsSearch,) {
-      const response = await axios.get('hello', { params: { ...paramsSearch, page } })
+      const response = await axios.get('users', { params: { ...paramsSearch, page } })
         .then(res => {
           const { data, meta } = res.data;
 
@@ -208,51 +215,39 @@ export default {
           alert('Delete Search Failed! Please try again')
         })
     },
-    async handleSubmit(paramsUser) {
-      const response = await axios.post('auth/registerByRoot',paramsUser)
-                                  .then(res => {alert('Submit success'); this.handleSearch()})
-                                  .catch(error => alert(error))
+    async handleUpdate(paramsUser) {
+      const response = await axios.post('users/create',paramsUser)
+                                  .then(res => {alert('Update success'); this.handleSearch()})
+                                  .catch(error =>{ alert(error); console.log(error)} )
     },
-    // async handleUpdate(paramsUser) {
-    //   const response = await axios.post('auth/updateByRoot',paramsUser)
-    //                               .then(res => {alert('Submit success'); this.handleSearch()})
-    //                               .catch(error => alert(error))
-    // },
  
+    clearUser(){
+      this.user = {
+                name: "",
+                email: "",
+                group: "",
+                status: "",
+            }
+    },
     clickAdd(newUser) {
-      let index = this.users.findIndex((c) => c.id === newUser.id)
-      if(index >= 0){
-        this.users.splice(index,1,newUser)
-      }
-      else {
-        this.handleSubmit(newUser)
-        // this.handleSearch()
-        // this.users.unshift(newUser)
-      }
-      // console.log(newUser)
-      
+      this.handleUpdate(newUser)
     },
     clickEdit(editUser) {
       this.user = editUser
-      // this.handleUpdate(this.user)
-      // console.log(editUser)
     },
     clickStatus(statusUser) {
-      // console.log(statusUser.status)
+      this.user = statusUser
     },
     clickDelete(deleteUser) {
-      // console.log(deleteUser)
+      this.user = deleteUser
+      console.log(deleteUser)
     }
   },
   computed: {
 
   },
   watch: {
-    
-    // deep: true
-      // this.handleUpdate(editUser)
-      // this.handleSearch()
-      // console.log('Watch edit run')
+
     }
   }
 
