@@ -28,7 +28,7 @@ class UserAuthController extends Controller
     //  {
     //      $this->middleware('auth:api', ['except' => ['login','register']]);
     //  }
-    public function hello(Request $request)
+    public function index(Request $request)
     {
         // dd($request->all());
         $user = User::query();
@@ -48,7 +48,9 @@ class UserAuthController extends Controller
             $user->where('is_active', '=', $request->status);
         }
 
-        $user = $user->paginate(10);
+
+        $user = $user->where('is_delete',0)
+                    ->paginate(10);
         return UserResource::collection($user);
 
         return response()->json([
@@ -100,9 +102,8 @@ class UserAuthController extends Controller
             // ]
         ]);
     }
-    public function registerByRoot(RegisterRequest $request)
+    public function create(RegisterRequest $request)
     {
-        // dd($request->all());
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -131,7 +132,7 @@ class UserAuthController extends Controller
         }
     }
 
-    public function updateByRoot(Request $request){
+    public function update(Request $request, User $user){
         $user = User::where('email',$request->email)->first();
         $user->update([
                         'name' => $request->name ,
@@ -161,6 +162,40 @@ class UserAuthController extends Controller
                 'message' => 'User update failed',
             ]);
         }
+    }
+    public function disable(Request $request, $id){
+        $user = User::find($id);
+     
+        if(empty($user)){
+            return response()->json([
+                "success" => false,
+                "massage" => "Tài khoản không tồn tại."
+            ]);
+        }
+        // else {
+
+        //     $user->is_delete = 1;
+            
+        //     return response()->json([
+        //         "success" => true,
+        //         "message" => "Tài khoản có ID = " . $user->id . " đã bị vô hiệu hóa."
+        //     ]);
+        // }
+        $user->is_delete = 1;
+        $result = $user->save();
+        if (!$result) {
+            return response()->json([
+                "success" => false,
+                "errors" => "Đã có lỗi xảy ra trong quá trình vận hành!!"
+            ]);
+        }
+
+        return response()->json(
+            [
+                'success' => true,
+                'errors' => "Đã thành công vô hiệu quá Khách hàng có ID = " . $user->id
+            ]
+        );
     }
 
     public function logout(Request $request)

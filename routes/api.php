@@ -16,14 +16,19 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/auth/register', [UserAuthController::class, 'register']);
-Route::post('/auth/registerByRoot', [UserAuthController::class, 'registerByRoot']);
-Route::post('/auth/updateByRoot', [UserAuthController::class, 'updateByRoot']);
 Route::post('/auth/login', [UserAuthController::class, 'login']);
 
-Route::get('/hello', [UserAuthController::class, 'hello']);
 
 Route::middleware('auth:api')->group(function () {
-    // Route::get('/auth/info', [UserAuthController::class, 'getMe']);
     Route::post('/auth/logout', [UserAuthController::class, 'logout']);
     Route::post('/auth/refressh', [UserAuthController::class, 'refresh']);
+});
+
+Route::prefix('users')->group(function () {
+    Route::get("/", [UserAuthController::class, "index"]);
+    Route::post("/create", [UserAuthController::class, "create"]);
+    Route::put('/update', [UserAuthController::class, 'update']);
+    Route::put('/update/status', [UserAuthController::class, 'update']);
+    Route::delete('/{id}/delete', [UserAuthController::class, 'disable']);
+
 });
