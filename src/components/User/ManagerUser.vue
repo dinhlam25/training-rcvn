@@ -67,7 +67,7 @@
                                     data-dismiss="modal" data-target="#ModalUpdateUser">Submit</button>
                                 <!-- <button @click="handleOkUpdate" type="submit" class="btn btn-success"
                                     data-dismiss="modal" data-target="#ModalUpdateUser">Submit</button> -->
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                <button type="button" @click="noChange" class="btn btn-danger" data-dismiss="modal">Close</button>
                             </div>
                         </form>
                     </div>
@@ -133,6 +133,9 @@ export default {
         //     // this.handleUpdate(this.userData)
 
         // }
+        noChange(){
+            return this.userData = Object.assign({}, this.edit)
+        }
     }
 }
 </script>

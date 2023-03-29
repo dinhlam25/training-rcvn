@@ -13,7 +13,7 @@ const router = createRouter({
       name: 'error',
       component: () => import('../views/Error.vue')
     },
-  
+
     {
       path: '/register',
       name: 'register',
@@ -23,12 +23,40 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: () => import('../components/LoginForm.vue')
+      component: () => import('../components/LoginForm.vue'),
+      beforeRouteEnter(to, from, next) {
+        if (localStorage.getItem('token')) {
+          localStorage.clear();
+          next()
+        }
+      }
     },
     {
-      path: '/dashboard',
-      name: 'dashboard',
-      component: () => import('../views/pages/User.vue')
+      path: '/dashboardUser',
+      name: 'userManagement',
+      component: () => import('../views/pages/User.vue'),
+      beforeEnter: (to, from, next) => {
+        const condition = localStorage.getItem('token')
+        if (condition) {
+          next()
+        } else {
+          next({ name: 'login' })
+        }
+      }
+    },
+    {
+      path: '/dashboardProduct',
+      name: 'productManagement',
+      component: () => import('../views/pages/Product.vue'),
+      beforeEnter: (to, from, next) => {
+        const condition = localStorage.getItem('token')
+        if (condition) {
+
+          next()
+        } else {
+          next({ name: 'login' })
+        }
+      }
     },
 
   ]

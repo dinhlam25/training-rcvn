@@ -57,7 +57,7 @@
       <hr>
       <!-- Add Search and delete search btn-->
       <div class="row d-flex bd-highlight mb-3">
-        <button data-toggle="modal" data-target="#myModal" type="button"
+        <button data-toggle="modal" data-target="#ModalUpdateUser" type="button"
           class="col-2 btn btn-primary btn-lg mr-auto p-2 bd-highlight" @click="clearUser()">Thêm mới</button>
         <button @click="() => handleSearch()" type="button" class="col-2 btn btn-primary btn-lg p-2 bd-highlight">Tìm
           kiếm</button>
