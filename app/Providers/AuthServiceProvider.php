@@ -26,9 +26,11 @@ class AuthServiceProvider extends ServiceProvider
     {
         //
         Passport::tokensCan([
-            'place-orders' => 'Place orders',
-            'check-status' => 'Check order status',
-            'only-read' =>'means only read not fix',
+            // 'place-orders' => 'Place orders',
+            // 'check-status' => 'Check order status',
+            'admin'    => 'All permission',
+            'editor'   => 'edit product and read, not Crud users',
+            'reviewer' => 'means only read not fix',
         ]);
     }
 }

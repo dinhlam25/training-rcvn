@@ -7,14 +7,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
-use App\Http\Resources\UserOverviewCollection;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\User\UserResource;
+use Carbon\Carbon;
 use Illuminate\Auth\Events\Login;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Laravel\Passport\Passport;
 
 class UserAuthController extends Controller
@@ -69,14 +66,27 @@ class UserAuthController extends Controller
             ], 401);
         }
         $user = User::where('email', $request->email)->firstOrFail();
-        $token = $user->createToken('passport OA', ['check-status', 'only-read'])->accessToken;
+        $token = $user->createToken('passport OA', ['editor', 'reviewer'])->accessToken;
+        // dd($request->isRememberMe);
+
+        if($request->isRememberMe){
+            $user->remember_token = $token;
+            $user->save();
+        }  else {
+            $user->remember_token = null;
+            $user->save();
+        }
+
+        $user->last_login_at = Carbon::now()->format('Y-m-d H:i:s');
+        $user->last_login_ip = $request->ip() ;
+        $user->save();
+
         // $token = $user->createToken('sanctum token',['onlyread'])->plainTextToken;
         return response()->json([
             'status' => 'success',
             'token' => $token,
             'user' => $user,
             'type' => 'bearer by passport',
-            // 'user' => $user,
 
         ]);
     }
@@ -172,15 +182,6 @@ class UserAuthController extends Controller
                 "massage" => "Tài khoản không tồn tại."
             ]);
         }
-        // else {
-
-        //     $user->is_delete = 1;
-            
-        //     return response()->json([
-        //         "success" => true,
-        //         "message" => "Tài khoản có ID = " . $user->id . " đã bị vô hiệu hóa."
-        //     ]);
-        // }
         $user->is_delete = 1;
         $result = $user->save();
         if (!$result) {
@@ -198,25 +199,25 @@ class UserAuthController extends Controller
         );
     }
 
-    public function logout(Request $request)
-    {
-        // auth('web')->logout();
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Successfully logged out',
-        ]);
-    }
+    // public function logout(Request $request)
+    // {
+    //     // auth('web')->logout();
+    //     return response()->json([
+    //         'status' => 'success',
+    //         'message' => 'Successfully logged out',
+    //     ]);
+    // }
 
-    public function refresh()
-    {
-        return response()->json([
-            'status' => 'success',
-            'user' => Auth::user(),
+    // public function refresh()
+    // {
+    //     return response()->json([
+    //         'status' => 'success',
+    //         'user' => Auth::user(),
 
-            // 'token' => Auth::refresh(),
-            'token' => Passport::refreshToken(),
-            'type' => 'bearer',
+    //         // 'token' => Auth::refresh(),
+    //         'token' => Passport::refreshToken(),
+    //         'type' => 'bearer',
 
-        ]);
-    }
+    //     ]);
+    // }
 }
