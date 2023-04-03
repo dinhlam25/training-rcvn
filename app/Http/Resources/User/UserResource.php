@@ -21,7 +21,7 @@ class UserResource extends JsonResource
                 'email' => $this->email,
                 'group' => $this->department,
                 'last_login' => $this->last_login_at,
-                'status' => $this->is_active ? 'Active' : 'Lock',
+                'status' => $this->is_active ? 'Đang hoạt động' : 'Tạm khóa',
             ];
     }
 }

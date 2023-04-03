@@ -21,9 +21,10 @@ class CreateProductRequest extends FormRequest
      */
     public function rules(): array
     {
+        
         return [
             'product_id'    => ['min:6','unique'],
-            'product_name'  => ['required','min:6'],
+            'product_name'  => ['required'],
             'product_price' => ['required','min:0','numeric'],
             'is_sales'      => ['required'],
             'product_image' => [
@@ -35,6 +36,7 @@ class CreateProductRequest extends FormRequest
             ]
         ];
     }
+    
     public function messages(): array
     {
         return [

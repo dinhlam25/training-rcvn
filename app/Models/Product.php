@@ -59,8 +59,8 @@ class Product extends Model
 
         return $firstCharactor . sprintf("%09d", $count);
     }
-    public function getProductImageAttribute($value)
-    {
-        // return $value ? Storage::disk('tmp')->url($value) : null;
-    }
+    // public function getProductImageAttribute($value)
+    // {
+    //      return $value ? Storage::disk('tmp')->url($value) : null;
+    // }
 }

@@ -31,7 +31,7 @@ Route::prefix('users')->middleware('api')->group(function () {
 });
 
 // PRODUCT MANAGEMENT
-Route::prefix('products')->middleware(['auth:api'])->group(function (){
+Route::prefix('products')->middleware('api')->group(function (){
     Route::get('/', GetProductListController::class);
     Route::post('/',CreateProductController::class);
     Route::post('/{id}',UpdateProductController::class);

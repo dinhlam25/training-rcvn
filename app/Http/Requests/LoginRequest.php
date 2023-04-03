@@ -27,4 +27,11 @@ class LoginRequest extends FormRequest
             'password' => 'required|string',
         ];
     }
+    public function messages(): array {
+        return [
+            'user.email.required' =>  'email không được rỗng',
+            'user.email.email' =>  'Không đúng định dạng email',
+            'user.password.required' =>  'password không được rỗng',
+        ];
+    }
 }

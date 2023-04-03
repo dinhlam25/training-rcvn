@@ -22,11 +22,11 @@ class CreateProductController extends Controller
         if($request->hasFile('product_image')){
             $data['product_image'] = Storage::put('/product',$request->product_image);
         }
-        $product = Product::create($data);
+        Product::create($data);
 
         return response()->json([
-            'status' => 'success',
-            'product' => $product,
+            // 'status'  => 'success',
+            'message' => 'Create success!',
             'created' => true
         ], 201);
     }

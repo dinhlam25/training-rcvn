@@ -24,20 +24,20 @@ class GetProductListController extends Controller
     {
         $products = Product::latest();
 
-        if ($request->filled('product_name')) {
-            $products->where('product_name', 'like', '%'.$request->product_name.'%');
+        if ($request->filled('productName')) {
+            $products->where('product_name', 'like', '%'.$request->productName.'%');
         }
 
-        if ($request->filled('is_sales')) {
-            $products->where('is_sales', $request->is_sales);
+        if ($request->filled('isSales')) {
+            $products->where('is_sales', $request->isSales);
         }
 
-        if ($request->filled('product_price_from')) {
-            $products->where('product_price', '>=', $request->product_price_from);
+        if ($request->filled('productPriceFrom')) {
+            $products->where('product_price', '>=', $request->productPriceFrom);
         }
 
-        if ($request->filled('product_price_to')) {
-            $products->where('product_price', '<=', $request->product_price_to);
+        if ($request->filled('productPriceTo')) {
+            $products->where('product_price', '<=', $request->productPriceTo);
         }
 
         return $products;

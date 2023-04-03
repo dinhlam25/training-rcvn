@@ -23,6 +23,7 @@ class ProductFactory extends Factory
             'product_name' => $name,
             'product_price' => fake()->randomDigit,
             'description' => fake()->text(),
+            'is_sales'   => fake()->randomElement(['-1','0','1']),
             'created_at' => now(),
             'updated_at' => now(),
         ];
