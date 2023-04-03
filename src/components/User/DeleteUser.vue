@@ -15,7 +15,7 @@
           </button>
         </div>
         <div class="modal-body">
-          Do you want to delete user ID: <strong>{{ this.userData.id }}</strong> with Name: <strong>{{ this.userData.name }}</strong> ?
+          Bạn có muốn xóa user ID: <strong>{{ this.userData.id }}</strong> with Name: <strong>{{ this.userData.name }}</strong> ?
         </div>
         <div class="modal-footer">
             <button @click="handleOkDelete" type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>

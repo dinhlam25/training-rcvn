@@ -120,11 +120,11 @@ export default {
         },
 
         handleOkCreate() {
-            console.log('create',this.userData)
+            // console.log('create',this.userData)
             this.$emit("update:save", this.userData)
         },
         handleOkUpdate() {
-            console.log('update',this.userData)
+            // console.log('update',this.userData)
             this.handleUpdate(this.userData)
         },
         // handleOk(){

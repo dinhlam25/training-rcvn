@@ -15,8 +15,8 @@
         </button>
       </div>
       <div class="modal-body">
-        Do you want to change status of <strong>{{ this.userData.name }}</strong> from 
-        <strong>{{ this.userData.status }}</strong> to <strong>{{ this.userData.status === 'Active'? 'Lock':'Active' }}</strong>?
+        Bạn có muốn thay đổi trạng thái của user <strong>{{ this.userData.name }}</strong> từ 
+        <strong>{{ this.userData.status }}</strong> sang <strong>{{ this.userData.status === 'Đang hoạt động'? 'Tạm khóa':'Đang hoạt động' }}</strong>?
       </div>
       <div class="modal-footer">
           <button @click="handleOkUpdate" type="button" class="btn btn-success" data-dismiss="modal">Save changes</button>

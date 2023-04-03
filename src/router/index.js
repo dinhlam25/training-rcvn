@@ -6,7 +6,16 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('../views/HomeView.vue')
+      component: () => import('../views/HomeView.vue'),
+      beforeEnter(to, from, next) {
+        const condition = localStorage.getItem('token')
+        if (condition) {
+          next({ name: 'userManagement' })
+        }
+        else {
+          next()
+        }
+      }
     },
     {
       path: '/:pathMatch(.*)*',
@@ -24,9 +33,12 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('../components/LoginForm.vue'),
-      beforeRouteEnter(to, from, next) {
-        if (localStorage.getItem('token')) {
-          localStorage.clear();
+      beforeEnter(to, from, next) {
+        const condition = localStorage.getItem('token')
+        if (condition) {
+          next({ name: 'userManagement' })
+        }
+        else {
           next()
         }
       }
@@ -56,9 +68,21 @@ const router = createRouter({
         } else {
           next({ name: 'login' })
         }
-      }
-    },
+      },
 
+      // children: [
+      //   {
+      //     path: 'detail',
+      //     // name: 'detailProduct'
+      //     component: () => import('../views/pages/DetailProduct.vue')
+      //   }
+      // ]
+    },
+    {            
+          path: '/dashboardProduct/detail',
+          // name: 'detailProduct'
+          component: () => import('../views/pages/DetailProduct.vue')     
+    }
   ]
 })
 

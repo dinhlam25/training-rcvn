@@ -183,9 +183,8 @@ export default {
   },
   setup() {
     const paramsSearch = reactive({ name: "", email: "", group: "", status: "" })
-    const lastPageUser = ref(1)
 
-    return { paramsSearch, lastPageUser }
+    return { paramsSearch }
   },
 
   created() {

@@ -1,5 +1,6 @@
 <template>
-    <div v-if="!storeUser.user">
+    <body>
+        <div v-if="!storeUser.user">
         <h2 >
             <h1>this is HomePage</h1>
             you have login not yet
@@ -9,12 +10,16 @@
             Hello {{ storeUser.user.name }}, login success!
         </h2> -->
     </div>
-
+    </body>
 </template>
 
 <script setup>
 import { useUser } from '@/stores/useUser'
 const storeUser = useUser()
 
-
 </script>
+<style>
+body   {
+    background: #e8eaeb;
+}
+</style>

@@ -37,27 +37,30 @@
             </div>
           </div>
           <div class="card-body">
-            <form @submit.prevent="authLogin">
-              <div class="input-group form-group">
+      
+            <Form @submit="authLogin" :validation-schema="schema">
+              <div class="input-group form-group mb-2">
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="bi bi-file-earmark-person-fill"></i></span>
                 </div>
-                <input v-model="params.email" type="text" class="form-control" placeholder="username">
-
+                <Field  v-model="params.email" name="email" type="text" class="form-control" placeholder="username" />
               </div>
-              <div class="input-group form-group">
+              <span class="ml-5 mb-3"><ErrorMessage name="email" style="color:yellow"/></span>
+              <div class="input-group form-group mb-2">
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
                 </div>
-                <input v-model="params.password" type="password" class="form-control" placeholder="password">
-              </div>
+                <Field  v-model="params.password" name="password" type="password" class="form-control"
+                  placeholder="password" />
+                </div>
+                <span class="ml-5 mb-3"><ErrorMessage name="password" style="color:yellow"/></span>
               <div class="row align-items-center remember">
                 <input type="checkbox" :value="!isRememberMe" v-model="params.isRememberMe">Remember Me
               </div>
               <div class="form-group">
                 <input type="submit" value="Login" class="btn float-right login_btn">
               </div>
-            </form>
+            </Form>
           </div>
           <div class="card-footer">
             <div class="d-flex justify-content-center links">
@@ -71,29 +74,37 @@
       </div>
     </div>
   </body>
+
 </template>
   
 <script>
 import axios from 'axios'
-// import { useRouter, useRoute } from 'vue-router'
 import { useUser } from '@/stores/useUser'
 import { useRouter } from 'vue-router'
 import { reactive, ref } from 'vue'
+import * as yup from 'yup';
+import { Form, Field, ErrorMessage } from 'vee-validate';
 
 
 export default {
-
+  components: {
+    Form, Field, ErrorMessage
+  },
   data() {
     return {
       // isRememberMe : false
     }
   },
   setup() {
+    const schema = yup.object({
+      email: yup.string().required().email(),
+      password: yup.string().required().min(8),
+    });
+    // OLD CODE
     const params = reactive({ email: "", password: "", isRememberMe: false })
     const storeUser = useUser()
     const router = useRouter()
     // const isRememberMe = ref(false)
- 
 
     const authLogin = async () => {
       const response = await axios.post('auth/login', params)
@@ -109,16 +120,26 @@ export default {
         alert(response.data.status)
         router.push('/dashboardUser');
       }
-      // else {
-      //   alert(response.data.status)
-      //   router.push('/login');
-      // }
 
     }
-
-    return { authLogin, params }
+    return { authLogin, params, schema }
   },
+  // function: {
+  //   validateField(value) {
+  //     if (!value) {
+  //       return 'this field is required';
+  //     }
 
+  //     if (value.length < 8) {
+  //       return 'this field must contain at least 8 characters';
+  //     }
+
+  //     return true;
+  //   }
+  // },
+  methods: {
+    
+  }
 
 
 }
@@ -133,6 +154,7 @@ html,
 body {
   /* background-image: url('http://getwallpapers.com/wallpaper/full/a/5/d/544750.jpg'); */
   /* background-size: cover; */
+  background: #e8eaeb;
   background-repeat: no-repeat;
   height: 100%;
   font-family: 'Numans', sans-serif;
