@@ -2,7 +2,7 @@
     <!-- The Modal -->
     <div class="modal fade" id="ModalUpdateUser">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <div class="modal-content" style="background: darkgray;">
 
                 <!-- Modal Header -->
                 <div class="modal-header">

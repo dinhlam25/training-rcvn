@@ -34,16 +34,6 @@
             placeholder="Nhập tên sản phẩm">
         </div>
 
-
-        <!-- <div class="input-group mb-3 col-3">
-          <select v-model="paramsSearch.group" class="form-control" id="exampleFormControlSelect1">
-            <option value="">Chọn trạng thái</option>
-            <option value="admin">admin</option>
-            <option value="editor">editor</option>
-            <option value="reviewer">reviewer</option>
-          </select>
-        </div> -->
-
         <div class="input-group mb-3 col-3">
           <select v-model="paramsSearch.isSales" class="form-control" id="exampleFormControlSelect1">
             <option value="">Chọn trạng thái</option>
@@ -54,7 +44,8 @@
         </div>
 
         <div class="input-group mb-3 col-2 ">
-          <input v-model="paramsSearch.productPriceFrom" type="text" name="" id="" class="search-input" placeholder="nhập giá min">
+          <input v-model="paramsSearch.productPriceFrom" type="text" name="" id="" class="search-input"
+            placeholder="nhập giá min">
         </div>
 
         <div class="ml-3 mt-2" style="font-size: large;">
@@ -62,16 +53,21 @@
         </div>
 
         <div class="input-group mb-3 col-2  ">
-          <input v-model="paramsSearch.productPriceTo" type="text" name="" id="" class="search-input" placeholder="nhập giá max">
+          <input v-model="paramsSearch.productPriceTo" type="text" name="" id="" class="search-input"
+            placeholder="nhập giá max">
         </div>
       </div>
       <hr>
 
       <!-- Add Search and delete search btn-->
       <div class="row d-flex bd-highlight mb-3">
-        <button data-toggle="modal" data-target="#ModalUpdateUser" type="button"
-          class="col-2 btn btn-primary btn-lg mr-auto p-2 bd-highlight" >Thêm mới</button>
-        <button @click="() => handleSearch()" type="button" class="col-2 btn btn-primary btn-lg p-2 bd-highlight">Tìm
+
+        <RouterLink to="/dashboardProduct/detail" type="button" class="col-2 btn btn-primary btn-lg  p-2 bd-highlight"> 
+          Thêm mới
+        </RouterLink>
+
+        <button @click="() => handleSearch()" type="button"
+          class="col-2 btn btn-primary btn-lg p-2 ml-auto bd-highlight">Tìm
           kiếm</button>
         <button @click="() => handleSearch(1, {})" type="button"
           class="col-2 ml-5 btn btn-warning btn-lg p-2 bd-highlight">Xóa tìm</button>
@@ -81,7 +77,7 @@
       <!-- <ManagerUser :edit="user" @update:reload="handleSearch()" @update:save="clickAdd" />
       <SetStatus :userData="user" @update:reload="handleSearch()" />
       <DeleteUser :userData="user" @update:reload="handleSearch()" /> -->
-
+      <DeleteProduct :productData="product" @update:reload="handleSearch()" />
       <!-- Pagination -->
       <div class="d-flex justify-content-center">
         <paginate v-model="curPageProduct" :page-count="lastPageProduct" :page-range="4" :margin-pages="2"
@@ -92,7 +88,8 @@
       </div>
       <!--Count Product -->
       <div class="d-flex justify-content-end">
-        <p>Hiển thị <strong>{{ fromProduct }} ~ {{ toProduct }}</strong> trong tổng số <strong>{{ totalProduct }}</strong> products
+        <p>Hiển thị <strong>{{ fromProduct }} ~ {{ toProduct }}</strong> trong tổng số <strong>{{ totalProduct }}</strong>
+          products
         </p>
       </div>
       <hr>
@@ -134,14 +131,15 @@
                     <td class="col-1">
                       <span class="text-muted">{{ product.is_sales }}</span><br>
                     </td>
-  
+
                     <td class="col-3">
-                      <RouterLink to="/dashboardProduct/detail"><button @click="clickEdit(product)" data-toggle="modal" data-target="#ModalUpdateUser" type="button"
-                        class="btn btn-outline-info btn-circle btn btn-circle"><i class="fa fa-edit"></i></button></RouterLink>
-                 
+                      <RouterLink to="/dashboardProduct/detail"><button @click="clickEdit(product)" type="button"
+                          class="btn btn-outline-info btn-circle btn btn-circle"><i class="fa fa-edit"></i></button>
+                      </RouterLink>
+
                       <button @click="clickDelete(product)" data-toggle="modal" data-target="#ModalDelete" type="button"
                         class="btn btn-outline-info btn-circle btn btn-circle ml-3"><i class="fa fa-trash"></i> </button>
-                 
+
                     </td>
                   </tr>
                 </tbody>
@@ -155,13 +153,13 @@
 
   </html>
   <router-view></router-view>
-
 </template>
 <script>
 import Paginate from 'vuejs-paginate-next'
 import axios from 'axios'
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, ref, onMounted, onBeforeMount } from 'vue'
 import { useProduct } from '@/stores/useProduct'
+import DeleteProduct from '../../components/Product/DeleteProduct.vue'
 
 export default {
   data() {
@@ -171,12 +169,10 @@ export default {
   },
   components: {
     paginate: Paginate,
-    // ManagerUser,
-    // SetStatus,
-    // DeleteUser
+    DeleteProduct,
   },
   setup() {
-    const product  = reactive({product_id: "", product_name: "", product_price: "", description: "", is_sales: "" });
+    const product = reactive({ product_id: "", product_name: "",product_image:"", product_price: "", description: "", is_sales: "" });
     const products = ref(0);
     const curPageProduct = ref(1);
     const fromProduct = ref(0);
@@ -187,13 +183,41 @@ export default {
 
     const paramsSearch = reactive({ productName: "", isSales: "", productPriceFrom: "", productPriceTo: "" })
     const storeProduct = useProduct();
-    
-    onMounted(
 
-      async () => {
-        const response = await axios.get('products')
+    onBeforeMount(
+      () => {
+        storeProduct.product = null
+        console.log('set clear pinia')
+      })
+    onMounted(
+      () => {
+        handleSearch(1, {});
+      }
+    )
+    const clickAdd = (newUser) => {
+      handleUpdate(newUser)
+    };
+
+    const clickEdit = (editProduct) => {
+      storeProduct.product = editProduct
+    };
+
+    const clickDelete = (deleteProduct) => {
+      storeProduct.product = deleteProduct
+
+        product.product_id = deleteProduct.product_id
+        product.product_name = deleteProduct.product_name
+        product.product_price = deleteProduct.product_price
+        product.product_image = deleteProduct.product_image
+        product.description = deleteProduct.description
+        product.is_sales = deleteProduct.is_sales
+      console.log(product)
+    }
+    const handleSearch = async (page = 1, params = paramsSearch) => {
+      const response = await axios.get('products', { params: { ...params, page } })
         .then(res => {
           const { data, meta } = res.data;
+
           // const data = res.data.data
           // const meta = res.data.meta
 
@@ -206,44 +230,7 @@ export default {
         })
         .catch(error => {
           console.log(error)
-          alert('Render table list Failed! Please try again')
-        })
-      } 
-    )
-    const clickAdd = (newUser) => {
-      this.handleUpdate(newUser)
-    };
-
-    const clickEdit = (editProduct) => {
-      // this.product = editProduct
-      // console.log(editProduct)
-      storeProduct.product = editProduct
-    };
-
-    const clickDelete = (deleteUser) => {
-      // this.user = deleteUser
-      // console.log(deleteUser)
-    }
-    const handleSearch = async (page = 1, paramsSearch) => {
-      const response = await axios.get('products', { params: { ...paramsSearch, page } })
-        .then(res => {
-          const { data, meta } = res.data;
-
-          // const data = res.data.data
-          // const meta = res.data.meta
-
-          this.products.value = data
-          this.curPageProduct.value = meta.current_page
-          this.fromProduct.value = meta.from
-          this.toProduct.value = meta.to
-          this.totalProduct.value = meta.total
-          this.lastPageProduct.value = meta.last_page
-          // console.log('data on start :', res.data)
-
-        })
-        .catch(error => {
-          console.log(error)
-          alert('Delete Search Failed! Please try again')
+          alert('Search Failed! Please try again')
         })
     };
     const handleUpdate = async (paramsProduct) => {
@@ -252,8 +239,10 @@ export default {
         .catch(error => { alert(error); console.log(error) })
     };
 
-    return { paramsSearch, clickAdd, clickEdit, clickDelete, handleUpdate, handleSearch, product,products,
-      curPageProduct,fromProduct,toProduct,totalProduct,lastPageProduct  }
+    return {
+      paramsSearch, clickAdd, clickEdit, clickDelete, handleUpdate, handleSearch, product, products,
+      curPageProduct, fromProduct, toProduct, totalProduct, lastPageProduct
+    }
   },
 
   // created() {
@@ -333,5 +322,4 @@ button:not(:disabled) {
 
 .modal-backdrop {
   z-index: -1;
-}
-</style>
+}</style>
