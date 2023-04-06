@@ -25,9 +25,25 @@ function onDrop(acceptFiles, rejectReasons) {
     //   console.log('acceptFiles',acceptFiles);
     //   console.log('rejectReasons',rejectReasons);
     state.files = acceptFiles;
-    storeProduct.product.product_image = acceptFiles;
-    console.log('sau tai anh storeProduct',storeProduct.product)
-    // console.log('files', state.files[0]);
+    if (acceptFiles){
+        storeProduct.product.product_image = acceptFiles[0]
+        console.log(acceptFiles[0])
+    } else {
+        storeProduct.product.product_image = null
+    }
+
+
+    // console.log(storeProduct.product.product_image)
+    // const file = storeProduct.product.product_image[0]
+    // const reader = new FileReader()
+
+    // let rawImg;
+    // reader.onloadend = () => {
+    //     // rawImg = reader.result;
+    //     // console.log('raw',rawImg);
+    //     // storeProduct.product.product_image = rawImg
+    // }
+    // reader.readAsDataURL(file);
 }
 
 function handleClickDeleteFile(index) {
@@ -42,6 +58,7 @@ function handleClickDeleteFile(index) {
             <div class="file-item" v-for="(file, index) in state.files" :key="index">
                 <!-- <div class="file-item"> -->
                 <span>{{ file.name }}</span>
+                <!-- <img :src="storeProduct.product.product_image.path" alt=""> -->
                 <span class="delete-file" @click="handleClickDeleteFile(index)">Delete</span>
             </div>
         </div>

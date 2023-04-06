@@ -62,7 +62,7 @@
       <!-- Add Search and delete search btn-->
       <div class="row d-flex bd-highlight mb-3">
 
-        <RouterLink to="/dashboardProduct/detail" type="button" class="col-2 btn btn-primary btn-lg  p-2 bd-highlight"> 
+        <RouterLink to="/dashboardProduct/detail" type="button" class="col-2 btn btn-primary btn-lg  p-2 bd-highlight">
           Thêm mới
         </RouterLink>
 
@@ -118,10 +118,25 @@
                 <tbody v-for="(product, product_id) in products" :key="product_id">
                   <tr>
                     <td class="col-1">{{ product.product_id }}</td>
-                    <!-- <td v-for="(item,i) in filteredItems" :key="i" class="col-2"> -->
+
                     <td class="col-2">
-                      <h5 class="font-medium mb-0">{{ product.product_name }}</h5>
+                      <div class="container-img">
+                        <img v-if="show === product.product_id && product.product_image" :src="product.product_image"
+                          width="90" class="hover-img" />
+
+                        <div @mouseleave="mouseleaveItem(product.product_id)" class="text-nowrap"
+                          @mouseover="mouseoverItem(product.product_id)">
+                          <h5 class="font-medium mb-0">{{ product.product_name }}</h5>
+                        </div>
+                      </div>
                     </td>
+
+                    <!-- <p v-lazy="show">{{product.product_image}}</p> -->
+
+                    <!-- <img v-if="show === product.product_id && product.product_image" :src="product.product_image"
+                      width="90" class="hover-img" /> -->
+
+
                     <td class="col-5">
                       <span class="text-muted">{{ product.description }}</span><br>
                     </td>
@@ -164,15 +179,16 @@ import DeleteProduct from '../../components/Product/DeleteProduct.vue'
 export default {
   data() {
     return {
-
+      show: null
     }
   },
   components: {
     paginate: Paginate,
     DeleteProduct,
+
   },
   setup() {
-    const product = reactive({ product_id: "", product_name: "",product_image:"", product_price: "", description: "", is_sales: "" });
+    const product = reactive({ product_id: "", product_name: "", product_image: "", product_price: "", description: "", is_sales: "" });
     const products = ref(0);
     const curPageProduct = ref(1);
     const fromProduct = ref(0);
@@ -187,7 +203,7 @@ export default {
     onBeforeMount(
       () => {
         storeProduct.product = null
-        console.log('set clear pinia')
+        // console.log('set clear pinia')
       })
     onMounted(
       () => {
@@ -200,17 +216,18 @@ export default {
 
     const clickEdit = (editProduct) => {
       storeProduct.product = editProduct
+      // console.log(editProduct.product_image)
     };
 
     const clickDelete = (deleteProduct) => {
       storeProduct.product = deleteProduct
 
-        product.product_id = deleteProduct.product_id
-        product.product_name = deleteProduct.product_name
-        product.product_price = deleteProduct.product_price
-        product.product_image = deleteProduct.product_image
-        product.description = deleteProduct.description
-        product.is_sales = deleteProduct.is_sales
+      product.product_id = deleteProduct.product_id
+      product.product_name = deleteProduct.product_name
+      product.product_price = deleteProduct.product_price
+      product.product_image = deleteProduct.product_image
+      product.description = deleteProduct.description
+      product.is_sales = deleteProduct.is_sales
       console.log(product)
     }
     const handleSearch = async (page = 1, params = paramsSearch) => {
@@ -245,21 +262,13 @@ export default {
     }
   },
 
-  // created() {
-  //   this.handleSearch();
-  // },
   methods: {
-
-
-
-    // clearProduct() {
-    //   this.product = {
-    //     name: "",
-    //     email: "",
-    //     group: "",
-    //     status: "",
-    //   }
-    // },
+    mouseoverItem(id) {
+      this.show = id
+    },
+    mouseleaveItem(id) {
+      this.show = null
+    }
 
   },
 
@@ -270,6 +279,41 @@ body {
   background: #e8eaeb;
   margin-top: 20px;
 }
+
+/* image product */
+.container-img {
+  position: relative;
+}
+
+.hover-img {
+  border-style: groove;
+  transition: .5s ease;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 75%;
+  transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.text-nowrap {
+  opacity: 1;
+  display: block;
+  height: auto;
+  transition: .8s fade;
+  backface-visibility: hidden;
+}
+
+.container-img:hover .hover-img {
+  opacity: 1;
+}
+
+.container-img:hover .text-nowrap {
+  opacity: 0.5;
+}
+
+/* image product */
 
 .card-login {
   position: relative;
@@ -322,4 +366,5 @@ button:not(:disabled) {
 
 .modal-backdrop {
   z-index: -1;
-}</style>
+}
+</style>

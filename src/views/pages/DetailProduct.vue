@@ -58,25 +58,43 @@
                                         </div>
 
                                         <div class="col-sm-6">
-                                            <div class="form-group pl-5">
-                                                <div style="text-align: center;">
+                                            <div class="form-group pl-2">
+                                                <div class="" style="text-align: ;">
                                                     <label style="font-size:x-large;"><strong>Hình ảnh sản
                                                             phẩm</strong></label>
                                                 </div>
-                                                <!-- <img src="assets/images/products/1.jpg" alt="product img" -->
-
-                                                <br />
-                                                <!-- <div class="d-flex">
-                                                    <button type="button"
-                                                        class="btn btn-info mt-2 mr-2 waves-effect waves-light">Upload <input type="file" name="" id=""></button>
-                                                    <button type="button"
-                                                        class="btn btn-danger mt-2  waves-effect waves-light">Xóa
-                                                        File</button>
-                                                    <input type="text" placeholder="tên file upload" style="height: auto;">
-                                                </div> -->
-                                                <div>
-                                                    <UploadFile />
+                                                <div v-if="url">
+                                                    <img :src="url" class="row ml-5 mb-1 " alt="ảnh sản phẩm"
+                                                        style="width: 220px; height: 220px;">
                                                 </div>
+
+                                                <div v-else-if="product.product_image">
+                                                    <img :src="product.product_image" class="row ml-5 mb-1 "
+                                                        alt="ảnh sản phẩm" style="width: 220px; height: 220px;">
+                                                </div>
+
+                                                <div v-else class="">
+                                                    <img src="https://png.pngtree.com/png-vector/20190223/ourlarge/pngtree-gallery-glyph-black-icon-png-image_691548.jpg"
+                                                        alt="ảnh sản phẩm" class="row ml-5 mb-1" style="width: 220px;">
+                                                </div>
+
+                                                <div class="mt-3">
+                                                    <button type="submit" v-bind="getRootProps()"
+                                                        class="btn btn-info ml-5 mr-1 waves-effect waves-light ">Upload</button>
+                                                    <button type="submit" @click="handleClickDeleteFile()"
+                                                        class="btn btn-danger waves-effect ml-2">Xóa file</button>
+                                                    <!-- input file handle -->
+                                                    <input v-bind="getInputProps()" />
+                                                    <input v-if="state.files[0]" type="text" disabled
+                                                        :placeholder="state.files[0].name" class="ml-2"
+                                                        style="height: 37px;">
+                                                    <input v-else-if="product.product_image" type="text" disabled
+                                                        :placeholder="product.product_image.slice(-10)" class="ml-2"
+                                                        style="height: 37px;">
+                                                    <input v-else type="text" disabled placeholder="Ten file" class="ml-2"
+                                                        style="height: 37px;">
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -86,7 +104,8 @@
                                             class="btn btn-success mr-1 waves-effect waves-light ">Cập nhật</button>
                                         <button v-else @click="handleSubmitCreate" type="submit"
                                             class="btn btn-success mr-1 waves-effect waves-light ">Thêm sản phẩm</button>
-                                        <button type="submit" class="btn btn-danger waves-effect ml-2">Hủy</button>
+                                        <button type="submit" @click="backToProductPage"
+                                            class="btn btn-danger waves-effect ml-2">Hủy</button>
                                     </div>
                                 </Form>
                             </div>
@@ -102,16 +121,37 @@
 <script setup>
 import { useProduct } from '@/stores/useProduct'
 import axios from 'axios';
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, watch, ref, onMounted, onBeforeMount } from 'vue'
 import { Form, Field, ErrorMessage } from 'vee-validate';
-import UploadFile from '../../components/Product/UploadFile.vue';
+import FormData from 'form-data'
+import { useDropzone } from 'vue3-dropzone';
+import { useRouter } from 'vue-router'
+
+
+const router = useRouter()
+// upload file by dropzone start
+const state = reactive({
+    files: [],
+});
+const url = ref(null)
+const inputFileName = ref(null)
+const { getRootProps, getInputProps, isDragActive, ...rest } = useDropzone({
+    onDrop,
+});
+watch(isDragActive, () => {
+    console.log('isDragActive', isDragActive.value, rest);
+});
+// upload file by dropzone end
 
 const storeProduct = useProduct();
 const product = reactive({ product_id: "", product_name: "", product_image: "", product_price: "", description: "", is_sales: "" });
+onBeforeMount
+    (
+        () => {
+        }
+    )
 onMounted(
     () => {
-
-
         if (storeProduct.product !== null) {
             product.product_id = storeProduct.product.product_id
             product.product_name = storeProduct.product.product_name
@@ -119,8 +159,6 @@ onMounted(
             product.product_price = storeProduct.product.product_price
             product.description = storeProduct.product.description
             product.is_sales = storeProduct.product.is_sales === "Ngừng bán" ? -1 : (storeProduct.product.is_sales === "Hết hàng" ? 0 : 1)
-            // console.log('info case', product)
-
         }
         else {
             product.product_id = null
@@ -129,14 +167,13 @@ onMounted(
             product.product_price = null
             product.description = null
             product.is_sales = null
-            // console.log('empty case', product)
         }
+        url.value = null
+
     }
 )
-const handleSubmit = () => { console.log('Đã submit') }
-const test = () => {
-    console.log(product)
-}
+const handleSubmit = () => { }
+
 const handleSubmitCreate = async () => {
 
     const params = {
@@ -151,28 +188,44 @@ const handleSubmitCreate = async () => {
         .then(res => { alert('Create success'); })
         .catch(error => { alert(error); console.log(error) })
 }
-
+// 
 const handleSubmitUpdate = async () => {
 
-    // const reader = new FileReader()
-
-    // let rawImg;
-    // reader.onloadend = () => {
-    //     rawImg = reader.result;
-    //     console.log(rawImg);
-    // }
-    // reader.readAsDataURL(storeProduct.product.product_image);
-
-
-    // console.log(storeProduct.product.product_image)
-    // console.log(storeProduct.product)
-
     product.product_image = storeProduct.product.product_image
-    console.log(product.product_image)
-    const response = await axios.post('products/' + product.product_id, product)
-        .then(res => { alert('Update success'); console.log('product_image') })
+    const formData = new FormData();
+
+    for (const [key, value] of Object.entries(product)) {
+        formData.append(key, product[key])
+    }
+
+    const response = await axios.post('products/' + product.product_id, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+        .then(res => { alert('Update success'); router.push('/dashboardProduct'); })
         .catch(error => { alert(error); })
-}
+};
+
+function onDrop(acceptFiles, rejectReasons) {
+    state.files = acceptFiles;
+    if (acceptFiles) {
+        storeProduct.product.product_image = acceptFiles[0]
+        url.value = URL.createObjectURL(acceptFiles[0])
+    } else {
+        storeProduct.product.product_image = null
+    }
+};
+function handleClickDeleteFile() {
+    // state.files.splice(index, 1);
+    storeProduct.product.product_image = null
+    state.files[0] = null
+    product.product_image = null
+    url.value = null
+};
+function backToProductPage() {
+    router.push('/dashboardProduct');
+};
 
 const simpleSchema = {
     name(value) {

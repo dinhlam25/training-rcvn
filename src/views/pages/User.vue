@@ -103,7 +103,7 @@
                     <th scope="col" class="border-0 text-uppercase font-medium">group</th>
                     <th scope="col" class="border-0 text-uppercase font-medium">last login</th>
                     <th scope="col" class="border-0 text-uppercase font-medium">status</th>
-                    <th scope="col" class="border-0 text-uppercase font-medium">Manage</th>
+                    <th scope="col" class="border-0 text-uppercase font-medium">Manage {{ userID }}</th>
 
                   </tr>
                 </thead>
@@ -131,14 +131,23 @@
 
                     </td>
                     <td class="col-3">
+                      <div v-if="userID !== user.id">
                       <button @click="clickEdit(user)" data-toggle="modal" data-target="#ModalUpdateUser" type="button"
                         class="btn btn-outline-info btn-circle btn btn-circle"><i class="fa fa-edit"></i> </button>
                       <button @click="clickStatus(user)" data-toggle="modal" data-target="#ModalStatus" type="button"
                         class="btn btn-outline-info btn-circle btn btn-circle ml-3"><i class="fa fa-key"></i> </button>
                       <button @click="clickDelete(user)"  data-toggle="modal" data-target="#ModalDelete" type="button"
                         class="btn btn-outline-info btn-circle btn btn-circle ml-3"><i class="fa fa-trash"></i> </button>
-                      <!-- <button type="button" class="btn btn-outline-info btn-circle btn btn-circle ml-2"><i
-                          class="fa fa-upload"></i> </button> -->
+                    </div>
+                    <div v-else>
+                      <button @click="clickEdit(user)" data-toggle="modal" data-target="#ModalUpdateUser" type="button"
+                        class="btn btn-outline-info btn-circle btn btn-circle"><i class="fa fa-edit"></i> </button>
+                      <button  type="button"  style="background:red"
+                        class="btn btn-outline-info btn-circle btn btn-circle ml-3"><i class="fa fa-key"></i> </button>
+                      <button type="button"   style="background-color:red"
+                        class="btn btn-outline-info btn-circle btn btn-circle ml-3"><i class="fa fa-trash"></i> </button>
+                    </div>
+               
                     </td>
                   </tr>
                 </tbody>
@@ -156,10 +165,12 @@
 <script>
 import Paginate from 'vuejs-paginate-next'
 import axios from 'axios'
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import ManagerUser from '../../components/User/ManagerUser.vue'
 import SetStatus from '../../components/User/SetStatus.vue'
 import DeleteUser from '../../components/User/DeleteUser.vue'
+import { useUser } from '@/stores/useUser'
+
 
 export default {
   data() {
@@ -183,8 +194,17 @@ export default {
   },
   setup() {
     const paramsSearch = reactive({ name: "", email: "", group: "", status: "" })
+    const storeUser = useUser()
+    const userID = ref(0)
+    onMounted(
+      () => {
+        if(storeUser.user){
+          userID.value = storeUser.user.id
+        }
+      }
+    )
 
-    return { paramsSearch }
+    return { paramsSearch,userID }
   },
 
   created() {
@@ -233,6 +253,7 @@ export default {
     },
     clickEdit(editUser) {
       this.user = editUser
+      console.log(editUser)
     },
     clickStatus(statusUser) {
       this.user = statusUser

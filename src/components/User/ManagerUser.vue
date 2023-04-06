@@ -55,8 +55,8 @@
                                 </div>
                                 <select v-model="userData.status" class="form-control" style="height: auto;">
                                     <option value="">Chọn trạng thái</option>
-                                    <option value="Active">Đang hoạt động</option>
-                                    <option value="Lock">Tạm khóa</option>
+                                    <option value="Đang hoạt động">Đang hoạt động</option>
+                                    <option value="Tạm khóa">Tạm khóa</option>
                                 </select>
                             </div>
                             <!-- Model footer -->
@@ -65,8 +65,7 @@
                                     data-dismiss="modal" data-target="#ModalUpdateUser">Submit</button>
                                 <button v-else @click="handleOkCreate" type="submit" class="btn btn-success"
                                     data-dismiss="modal" data-target="#ModalUpdateUser">Submit</button>
-                                <!-- <button @click="handleOkUpdate" type="submit" class="btn btn-success"
-                                    data-dismiss="modal" data-target="#ModalUpdateUser">Submit</button> -->
+
                                 <button type="button" @click="noChange" class="btn btn-danger" data-dismiss="modal">Close</button>
                             </div>
                         </form>
