@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\Product\{GetProductListController,CreateProductController,
-    UpdateProductController,DeleteProductController};
+    UpdateProductController,DeleteProductController, GetOneProductController};
 // use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +33,7 @@ Route::prefix('users')->middleware('api')->group(function () {
 // PRODUCT MANAGEMENT
 Route::prefix('products')->middleware('api')->group(function (){
     Route::get('/', GetProductListController::class);
+    Route::get('/{id}', GetOneProductController::class);
     Route::post('/',CreateProductController::class);
     Route::post('/{id}',UpdateProductController::class);
     Route::delete('/{id}',DeleteProductController::class);

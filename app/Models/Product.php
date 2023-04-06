@@ -50,8 +50,7 @@ class Product extends Model
     public static function convertIdByProductName($product_name)
     {
         $firstCharactor = strtoupper(substr(Str::slug($product_name), 0, 1));
-        $latestProduct = self::latest()->where('product_id', 'regexp', $firstCharactor.'[0-9]+')->first();
-
+        $latestProduct = self::orderByDesc('product_id')->where('product_id', 'regexp', $firstCharactor.'[0-9]+')->first();
         $count = 1;
         if ($latestProduct) {
             $count = intval(substr($latestProduct->product_id, 1)) + 1;
@@ -59,8 +58,9 @@ class Product extends Model
 
         return $firstCharactor . sprintf("%09d", $count);
     }
-    // public function getProductImageAttribute($value)
-    // {
-    //      return $value ? Storage::disk('tmp')->url($value) : null;
-    // }
+    public function getProductImageAttribute($value)
+    {
+         return $value ? Storage::disk('local')->url($value) : null;
+        //  Storage::put('/product',$request->product_image)
+    }
 }

@@ -22,23 +22,23 @@ class UpdateProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'product_name'  => ['required','min:6'],
-            'product_price' => ['required','min:0','numeric'],
-            'is_sales'      => ['required'],
-            'product_image' => [
-                'nullable',
-                'file',
-                'max:2048',
-                'dimensions:max_width:1024',
-                'mines:png,jpg,jpeg',
-                'url'
-            ]
+            // 'product_name'  => ['required','min:6'],
+            // 'product_price' => ['required','min:0','numeric'],
+            // 'is_sales'      => ['required'],
+            // 'product_image' => [
+            //     'nullable',
+            //     'file',
+            //     // 'max:2048',
+            //     // 'dimensions:max_width:1024',
+            //     'mimes:png,jpg,jpeg',
+            //     'url'
+            // ]
         ];
     }
     public function messages(): array
     {
         return [
-            'product_name.name' => 'Vui lòng nhập tên sản phẩm.',
+            'product_name.required' => 'Vui lòng nhập tên sản phẩm.',
             'product_name.min' => 'Tên phải lớn hơn 6 ký tự.',
             'product_price.required' => 'Giá bán không được để trống.',
             'product_price.numeric' => 'Giá bán chỉ được nhập số.',

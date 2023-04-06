@@ -21,7 +21,12 @@ class CreateProductController extends Controller
 
         if($request->hasFile('product_image')){
             $data['product_image'] = Storage::put('/product',$request->product_image);
+            // \Log::info(print_r($data['product_image'], true));
         }
+        else{
+            // \Log::info('meo zo');
+        }
+
         Product::create($data);
 
         return response()->json([

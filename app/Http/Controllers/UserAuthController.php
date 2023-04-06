@@ -67,7 +67,7 @@ class UserAuthController extends Controller
         }
         $user = User::where('email', $request->email)->firstOrFail();
         $token = $user->createToken('passport OA', ['editor', 'reviewer'])->accessToken;
-        // dd($request->isRememberMe);
+        // dd('11', $request->user('api'));
 
         if($request->isRememberMe){
             $user->remember_token = $token;
@@ -76,11 +76,11 @@ class UserAuthController extends Controller
             $user->remember_token = null;
             $user->save();
         }
-
+        // dd($user);
         $user->last_login_at = Carbon::now()->format('Y-m-d H:i:s');
         $user->last_login_ip = $request->ip() ;
         $user->save();
-
+        // dd($user);
         // $token = $user->createToken('sanctum token',['onlyread'])->plainTextToken;
         return response()->json([
             'status' => 'success',
