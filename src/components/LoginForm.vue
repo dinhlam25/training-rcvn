@@ -45,7 +45,7 @@
                 </div>
                 <Field  v-model="params.email" name="email" type="text" class="form-control" placeholder="username" />
               </div>
-              <span class="ml-5 mb-3"><ErrorMessage name="email" style="color:yellow"/></span>
+              <span class="ml-5 mb-3"><ErrorMessage name="email" style="color:red"/></span>
               <div class="input-group form-group mb-2">
                 <div class="input-group-prepend">
                   <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
@@ -53,7 +53,7 @@
                 <Field  v-model="params.password" name="password" type="password" class="form-control"
                   placeholder="password" />
                 </div>
-                <span class="ml-5 mb-3"><ErrorMessage name="password" style="color:yellow"/></span>
+                <span class="ml-5 mb-3"><ErrorMessage name="password" style="color:red"/></span>
               <div class="row align-items-center remember">
                 <input type="checkbox" :value="!isRememberMe" v-model="params.isRememberMe">Remember Me
               </div>

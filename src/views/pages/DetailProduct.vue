@@ -10,7 +10,7 @@
             <div>
                 <div class="row">
                     <div class="col-12">
-                        <div class="card" style="background: #e8eaeb;">
+                        <div class="card" style="background-color: #e8eaeb !important;width: auto;height: 550px;">
                             <div class="card-body">
                                 <!-- <div v-if=""></div> -->
                                 <h3 v-if="storeProduct.product" class="card-title mb-3" style="text-align: center;">Cập nhật
@@ -32,7 +32,7 @@
                                             </div>
                                             <div class="row mb-4">
                                                 <label class="col-4" style="text-align: center;font-size: large;"
-                                                    for="price"><strong>Giá bán</strong></label>
+                                                    for="price"><strong>Giá bán </strong></label>
                                                 <Field v-model="product.product_price" id="price" name="price" type="text"
                                                     placeholder="Nhập giá bán" class="col-8 form-control" />
                                                 <ErrorMessage name="price" class="errorMess" />
@@ -47,13 +47,15 @@
                                             <div class="row mb-4">
                                                 <label class="control-labelstrong col-4"
                                                     style="text-align: center;font-size: large;"><strong>Trạng
-                                                        thái</strong></label>
-                                                <select v-model="product.is_sales" class="form-control select2 col-8">
-                                                    <option>Chọn trạng thái</option>
+                                                        thái </strong></label>
+                                                <Field name="status" as="select" v-model="product.is_sales"
+                                                    class="form-control select2 col-8">
+                                                    <option value="">Chọn trạng thái</option>
                                                     <option value="-1">Ngừng bán</option>
                                                     <option value="0">Hết hàng</option>
                                                     <option value="1">Đang bán</option>
-                                                </select>
+                                                </Field>
+                                                <ErrorMessage name="status" class="errorMess" />
                                             </div>
                                         </div>
 
@@ -85,11 +87,16 @@
                                                         class="btn btn-danger waves-effect ml-2">Xóa file</button>
                                                     <!-- input file handle -->
                                                     <input v-bind="getInputProps()" />
+
+                                                    <!-- <Field v-bind="getInputProps()" name="mimes_field"
+                                                        rules="ext:jpg,png" />
+                                                    <ErrorMessage name="mimes_field" class="errorMess" /> -->
+
                                                     <input v-if="state.files[0]" type="text" disabled
                                                         :placeholder="state.files[0].name" class="ml-2"
                                                         style="height: 37px;">
                                                     <input v-else-if="product.product_image" type="text" disabled
-                                                        :placeholder="product.product_image.slice(-10)" class="ml-2"
+                                                        :placeholder="product.product_image.slice(-20)" class="ml-2"
                                                         style="height: 37px;">
                                                     <input v-else type="text" disabled placeholder="Ten file" class="ml-2"
                                                         style="height: 37px;">
@@ -161,12 +168,12 @@ onMounted(
             product.is_sales = storeProduct.product.is_sales === "Ngừng bán" ? -1 : (storeProduct.product.is_sales === "Hết hàng" ? 0 : 1)
         }
         else {
-            product.product_id = null
-            product.product_name = null
-            product.product_image = null
-            product.product_price = null
-            product.description = null
-            product.is_sales = null
+            product.product_id = ""
+            product.product_name = ""
+            product.product_image = ""
+            product.product_price = ""
+            product.description = ""
+            product.is_sales = ""
         }
         url.value = null
 
@@ -176,22 +183,27 @@ const handleSubmit = () => { }
 
 const handleSubmitCreate = async () => {
 
-    const params = {
-        'product_name': product.product_name,
-        'product_price': product.product_price,
-        'product_image': product.product_image,
-        'description': product.description,
-        'is_sales': product.is_sales
+    const formData = new FormData();
+
+    for (const [key, value] of Object.entries(product)) {
+        if (key === 'product_id') {
+            continue
+        }
+        formData.append(key, product[key])
     }
 
-    const response = await axios.post('products', params)
-        .then(res => { alert('Create success'); })
+    const response = await axios.post('products', formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+        .then(res => { alert('Create success'); router.push('/dashboardProduct'); })
         .catch(error => { alert(error); console.log(error) })
 }
 // 
 const handleSubmitUpdate = async () => {
 
-    product.product_image = storeProduct.product.product_image
+    // product.product_image = storeProduct.product.product_image
     const formData = new FormData();
 
     for (const [key, value] of Object.entries(product)) {
@@ -210,15 +222,15 @@ const handleSubmitUpdate = async () => {
 function onDrop(acceptFiles, rejectReasons) {
     state.files = acceptFiles;
     if (acceptFiles) {
-        storeProduct.product.product_image = acceptFiles[0]
+        product.product_image = acceptFiles[0]
         url.value = URL.createObjectURL(acceptFiles[0])
     } else {
-        storeProduct.product.product_image = null
+        product.product_image = null
     }
 };
 function handleClickDeleteFile() {
     // state.files.splice(index, 1);
-    storeProduct.product.product_image = null
+    // storeProduct.product.product_image = null
     state.files[0] = null
     product.product_image = null
     url.value = null
@@ -247,6 +259,13 @@ const simpleSchema = {
 
         if (!regex.test(value)) {
             return 'Giá sản phẩm phải là số và lớn hơn 0'
+        }
+        if (value)
+            return ''
+    },
+    status(value) {
+        if (!value) {
+            return 'Trạng thái sản phẩm không được để trống'
         }
         if (value)
             return ''

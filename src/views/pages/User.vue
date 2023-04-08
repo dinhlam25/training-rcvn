@@ -83,7 +83,7 @@
         <p>Hiển thị <strong>{{ fromUser }} ~ {{ toUser }}</strong> trong tổng số <strong>{{ totalUser }}</strong> users
         </p>
       </div>
-      <hr>
+      <!-- <hr> -->
       <!-- table list user -->
       <div class="row">
         <div class="col-md-12">
@@ -103,7 +103,7 @@
                     <th scope="col" class="border-0 text-uppercase font-medium">group</th>
                     <th scope="col" class="border-0 text-uppercase font-medium">last login</th>
                     <th scope="col" class="border-0 text-uppercase font-medium">status</th>
-                    <th scope="col" class="border-0 text-uppercase font-medium">Manage {{ userID }}</th>
+                    <th scope="col" class="border-0 text-uppercase font-medium">Manage</th>
 
                   </tr>
                 </thead>
@@ -125,23 +125,24 @@
                       <span class="text-muted">{{ user.last_login }}</span><br>
 
                     </td>
-                    <td class="col-2">
-
+                    <td v-if="user.status === 'Tạm khóa'" class="col-2">
+                      <span class="" style="color:red">{{ user.status }}</span>
+                    </td>
+                    <td v-else class="col-2">
                       <span class="text-muted">{{ user.status }}</span>
-
                     </td>
                     <td class="col-3">
                       <div v-if="userID !== user.id">
-                      <button @click="clickEdit(user)" data-toggle="modal" data-target="#ModalUpdateUser" type="button"
-                        class="btn btn-outline-info btn-circle btn btn-circle"><i class="fa fa-edit"></i> </button>
+                      <button @click="clickEdit(user)"  data-toggle="modal" data-target="#ModalUpdateUser" type="button"
+                      style="background-color: #93e2ee;"  class="btn btn-outline-info btn-circle btn btn-circle "><i class="fa fa-edit"></i> </button>
                       <button @click="clickStatus(user)" data-toggle="modal" data-target="#ModalStatus" type="button"
-                        class="btn btn-outline-info btn-circle btn btn-circle ml-3"><i class="fa fa-key"></i> </button>
+                      style="background-color: #ffc107;" class="btn btn-outline-info btn-circle btn btn-circle ml-3 "><i class="fa fa-key"></i> </button>
                       <button @click="clickDelete(user)"  data-toggle="modal" data-target="#ModalDelete" type="button"
-                        class="btn btn-outline-info btn-circle btn btn-circle ml-3"><i class="fa fa-trash"></i> </button>
+                      style="background-color: #ff7c21;" class="btn btn-outline-info btn-circle btn btn-circle ml-3 "><i class="fa fa-trash"></i> </button>
                     </div>
                     <div v-else>
                       <button @click="clickEdit(user)" data-toggle="modal" data-target="#ModalUpdateUser" type="button"
-                        class="btn btn-outline-info btn-circle btn btn-circle"><i class="fa fa-edit"></i> </button>
+                      style="background-color: #93e2ee;" class="btn btn-outline-info btn-circle btn btn-circle btn btn-success"><i class="fa fa-edit"></i> </button>
                       <button  type="button"  style="background:red"
                         class="btn btn-outline-info btn-circle btn btn-circle ml-3"><i class="fa fa-key"></i> </button>
                       <button type="button"   style="background-color:red"

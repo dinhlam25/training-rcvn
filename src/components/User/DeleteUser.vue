@@ -33,7 +33,7 @@
       methods: {
           async handleOkDelete() {
               const response = await axios.delete('users/'+this.userData.id+'/delete', this.userData)
-                  .then(res => { alert('Update Status success'); this.$emit("update:reload") })
+                  .then(res => { alert(response.data.message); this.$emit("update:reload") })
                   .catch(error => { alert(error); })
           },
       }

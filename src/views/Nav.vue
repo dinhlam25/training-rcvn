@@ -18,8 +18,10 @@
             <li class="ml-5">
                 <RouterLink to="/dashboardProduct"><button class="btn btn-secondary">Products</button></RouterLink>
             </li>
-
-            <li class="ml-auto mr-5">
+            <li class="ml-auto mr-5 mt-2">
+                <span style="font-size: large;"><i class="fa fa-user-circle-o"></i><strong> Admin</strong></span>
+            </li>
+            <li class="mr-5">
                 <button class="btn btn-primary" @click="handleClick">Logout</button>
             </li>
         </ul>

@@ -44,8 +44,8 @@
         </div>
 
         <div class="input-group mb-3 col-2 ">
-          <input v-model="paramsSearch.productPriceFrom" type="text" name="" id="" class="search-input"
-            placeholder="nhập giá min">
+          <input style="width: 180px" v-model="paramsSearch.productPriceFrom" type="text" name="" id=""
+            class="search-input" placeholder="nhập giá min">
         </div>
 
         <div class="ml-3 mt-2" style="font-size: large;">
@@ -53,10 +53,20 @@
         </div>
 
         <div class="input-group mb-3 col-2  ">
-          <input v-model="paramsSearch.productPriceTo" type="text" name="" id="" class="search-input"
+          <input style="width: 180px" v-model="paramsSearch.productPriceTo" type="text" name="" id="" class="search-input"
             placeholder="nhập giá max">
         </div>
       </div>
+      <span class="d-flex justify-content-end" style="right: 240px;
+      color: red;
+      font-size: larger;"
+        v-if="paramsSearch.productPriceFrom < 0">Vui
+        lòng nhập số dương</span>
+        <span class="d-flex justify-content-end" style="right: 240px;
+      color: red;
+      font-size: larger;"
+        v-else-if="paramsSearch.productPriceTo < 0">Vui
+        lòng nhập số dương</span>
       <hr>
 
       <!-- Add Search and delete search btn-->
@@ -92,7 +102,8 @@
           products
         </p>
       </div>
-      <hr>
+      <!-- <hr>
+       -->
       <!-- table list product -->
       <div class="row">
         <div class="col-md-12">
@@ -143,17 +154,23 @@
                     <td class="col-1">
                       <span class="text-muted">${{ product.product_price }}</span><br>
                     </td>
-                    <td class="col-1">
+                    <td v-if="product.is_sales === 'Ngừng bán'" class="col-1">
+                      <span class="" style="color:red;">{{ product.is_sales }}</span><br>
+                    </td>
+                    <td v-else class="col-1">
                       <span class="text-muted">{{ product.is_sales }}</span><br>
+
                     </td>
 
                     <td class="col-3">
                       <RouterLink to="/dashboardProduct/detail"><button @click="clickEdit(product)" type="button"
-                          class="btn btn-outline-info btn-circle btn btn-circle"><i class="fa fa-edit"></i></button>
+                          style="background-color: #93e2ee;" class="btn btn-outline-info btn-circle btn btn-circle"><i
+                            class="fa fa-edit"></i></button>
                       </RouterLink>
 
                       <button @click="clickDelete(product)" data-toggle="modal" data-target="#ModalDelete" type="button"
-                        class="btn btn-outline-info btn-circle btn btn-circle ml-3"><i class="fa fa-trash"></i> </button>
+                        style="background-color: #ff7c21;" class="btn btn-outline-info btn-circle btn btn-circle ml-3"><i
+                          class="fa fa-trash"></i> </button>
 
                     </td>
                   </tr>
@@ -366,5 +383,4 @@ button:not(:disabled) {
 
 .modal-backdrop {
   z-index: -1;
-}
-</style>
+}</style>

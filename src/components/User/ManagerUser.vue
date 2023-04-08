@@ -13,62 +13,70 @@
                 <!-- Modal body -->
                 <div class="modal-body">
                     <div class="card-body">
-                        <form @submit.prevent="handleSubmit">
+                        <Form @submit.prevent="handleSubmit" :validation-schema="schema">
 
-                            <div class="input-group form-group">
+                            <div class="input-group form-group" style="margin-top: 10px;margin-bottom: 0 !important;" >
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" style="width: auto;">
-                                        <p>Name</p>
+                                    <span class="input-group-text" style="width: 80px; background-color:#ffc107 ;">
+                                        <p style="top: 20%;">Name </p>
                                     </span>
                                 </div>
-                                <input v-model="userData.name" type="text" class="form-control" placeholder="Name">
+                                <Field name="name" v-model="userData.name" type="text" class="form-control" placeholder="Name" />
                             </div>
+                            <ErrorMessage class="" name="name" style="left: 90px;color:red"/>
 
-                            <div class="input-group form-group">
+                            <div class="input-group form-group" style="margin-top: 10px;margin-bottom: 0 !important;">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" style="width: auto;">
-                                        <p>Email</p>
+                                    <span class="input-group-text" style="width: 80px; background-color:#ffc107 ;">
+                                        <p style="top: 20%;">Email </p>
                                     </span>
                                 </div>
-                                <input v-model="userData.email" type="email" class="form-control" placeholder="Email">
+                                <Field name="email"  v-model="userData.email" type="email" class="form-control" placeholder="Email" />
                             </div>
+                            <ErrorMessage class="" name="email" style="left: 90px;color:red"/>
 
-                            <div class="input-group form-group">
+                            <div class="input-group form-group" style="margin-top: 10px;margin-bottom: 0 !important;">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" style="width: auto;">
-                                        <p>Group</p>
+                                    <span class="input-group-text" style="width: 80px; background-color:#ffc107 ;">
+                                        <p style="top: 20%;">Group</p>
                                     </span>
                                 </div>
-                                <select v-model="userData.group" class="form-control" style="height: auto;">
+                                <Field name="group" as="select" v-model="userData.group" class="form-control" style="height: auto;">
                                     <option value="">Chọn nhóm</option>
                                     <option value="admin">admin</option>
                                     <option value="editor">editor</option>
                                     <option value="reviewer">reviewer</option>
-                                </select>
+                                </Field>
                             </div>
+                            <ErrorMessage class="" name="group" style="left: 90px;color:red"/>
 
-                            <div class="input-group form-group">
+
+                            <div class="input-group form-group" style="margin-top: 10px;margin-bottom: 0 !important;">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" style="width: auto;">
-                                        <p>Status</p>
+                                    <span class="input-group-text" style="width: 80px; background-color:#ffc107 ;">
+                                        <p style="top: 20%;">Status </p>
                                     </span>
                                 </div>
-                                <select v-model="userData.status" class="form-control" style="height: auto;">
+                                <Field name="status" as="select" v-model="userData.status" class="form-control" style="height: auto;">
                                     <option value="">Chọn trạng thái</option>
                                     <option value="Đang hoạt động">Đang hoạt động</option>
                                     <option value="Tạm khóa">Tạm khóa</option>
-                                </select>
+                                </Field>
                             </div>
+                            <ErrorMessage class="" name="status" style="left: 90px;color:red"/>
+                            
                             <!-- Model footer -->
                             <div class="modal-footer d-flex justify-content-end">
-                                <button v-if="this.userData.id" @click="handleOkUpdate" type="submit" class="btn btn-success"
-                                    data-dismiss="modal" data-target="#ModalUpdateUser">Submit</button>
+                                <button v-if="this.userData.id" @click="handleOkUpdate" type="submit"
+                                    class="btn btn-success" data-dismiss="modal"
+                                    data-target="#ModalUpdateUser">Submit</button>
                                 <button v-else @click="handleOkCreate" type="submit" class="btn btn-success"
                                     data-dismiss="modal" data-target="#ModalUpdateUser">Submit</button>
 
-                                <button type="button" @click="noChange" class="btn btn-danger" data-dismiss="modal">Close</button>
+                                <button type="button" @click="noChange" class="btn btn-danger"
+                                    data-dismiss="modal">Close</button>
                             </div>
-                        </form>
+                        </Form>
                     </div>
                 </div>
 
@@ -80,7 +88,12 @@
 <script>
 import { ref, computed } from 'vue';
 import axios from 'axios';
+import * as yup from 'yup';
+import { Form, Field, ErrorMessage } from 'vee-validate';
 export default {
+    components: {
+        Form, Field, ErrorMessage
+    },
     props: {
         edit: {
             typeof: Object,
@@ -108,6 +121,16 @@ export default {
             }
         }
     },
+    setup() {
+        const schema = yup.object({
+            name: yup.string().required(),
+            email: yup.string().required().email(),
+            // password: yup.string().required().min(8),
+            group: yup.string().required(),
+            status: yup.string().required(),
+        });
+        return { schema }
+    },
     methods: {
         handleSubmit() {
         },
@@ -115,7 +138,7 @@ export default {
             // console.log(this.userData)
             const response = await axios.put('users/update', this.userData)
                 .then(res => { alert('Update success'); this.$emit("update:reload") })
-                .catch(error => { alert(error); })
+                .catch(error => { alert(error);this.noChange() })
         },
 
         handleOkCreate() {
@@ -127,12 +150,12 @@ export default {
             this.handleUpdate(this.userData)
         },
         // handleOk(){
-            // console.log(this.userData.id)
+        // console.log(this.userData.id)
         //     // this.$emit("update:save", this.userData)
         //     // this.handleUpdate(this.userData)
 
         // }
-        noChange(){
+        noChange() {
             return this.userData = Object.assign({}, this.edit)
         }
     }
