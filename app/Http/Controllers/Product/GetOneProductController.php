@@ -11,7 +11,9 @@ class GetOneProductController extends Controller
 {
     public function __invoke($id,Request $request)
     {
-        dd($request->user('api'));
+        // dd($request->user('api'));
+        dd('user request',$request->user('api'));
+
         $product = Product::findOrFail($id);
 
         return response()->json([

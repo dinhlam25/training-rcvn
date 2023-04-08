@@ -21,19 +21,23 @@ class UpdateProductRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            // 'product_name'  => ['required','min:6'],
-            // 'product_price' => ['required','min:0','numeric'],
-            // 'is_sales'      => ['required'],
-            // 'product_image' => [
-            //     'nullable',
-            //     'file',
-            //     // 'max:2048',
-            //     // 'dimensions:max_width:1024',
-            //     'mimes:png,jpg,jpeg',
-            //     'url'
-            // ]
+        $dataValidate = [
+            'product_name' => ['required', 'min:5'],
+            'product_price' => ['required', 'numeric', 'min:0'],
+            'is_sales' => ['required'],
         ];
+
+        if (request()->hasFile('product_image')) {
+            $dataValidate['product_image'] = [
+                'nullable',
+                'file',
+                'mimes:jpg,png,jpeg',
+                'max:2048',
+                'dimensions:max_width=1024'
+            ];
+        }
+
+        return $dataValidate;
     }
     public function messages(): array
     {

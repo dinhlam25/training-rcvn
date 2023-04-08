@@ -33,10 +33,21 @@ class GetProductListController extends Controller
         }
 
         if ($request->filled('productPriceFrom')) {
+            if($request->productPriceFrom < 0){
+                return response()->json([
+                    'status'=> 'failed',
+                    'message' => 'Vui lòng nhập số dương'
+                ]); 
+            }
             $products->where('product_price', '>=', $request->productPriceFrom);
         }
 
         if ($request->filled('productPriceTo')) {
+            if($request->productPriceTo < 0){
+                return response()->json([
+                    'status'=> 'failed',
+                    'message' => 'Vui lòng nhập số dương'
+                ]); }
             $products->where('product_price', '<=', $request->productPriceTo);
         }
 

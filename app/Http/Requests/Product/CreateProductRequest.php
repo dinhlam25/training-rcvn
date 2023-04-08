@@ -27,13 +27,13 @@ class CreateProductRequest extends FormRequest
             'product_name'  => ['required'],
             'product_price' => ['required','min:0','numeric'],
             'is_sales'      => ['required'],
-            // 'product_image' => [
-            //     'nullable',
-            //     'file',
-            //     // 'max:2048',
-            //     // 'dimensions:max_width:1024',
-            //     'mimes:png,jpg,jpeg' 
-            // ]
+            'product_image' => [
+                'nullable',
+                'file',
+                'max:2048',
+                'dimensions:max_width:1024',
+                'mimes:png,jpg,jpeg' 
+            ]
         ];
     }
     

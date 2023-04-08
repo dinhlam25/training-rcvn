@@ -11,6 +11,13 @@ class DeleteProductController extends Controller
 {
     public function __invoke($id,DeleteProductRequest $request)
     {
+        // if($id === $request->user('api')){
+        //     response()->json([
+        //         'status' => 'failed',
+        //         'message' => 'Bạn không thể tự xóa mình',
+        //     ]);
+        // }
+        die($request->user('api'));
         $product = Product::findOrFail($id);
         $product->delete();
 

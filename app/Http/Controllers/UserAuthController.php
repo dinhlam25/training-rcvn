@@ -174,12 +174,21 @@ class UserAuthController extends Controller
         }
     }
     public function disable(Request $request, $id){
+        // dd('111',$request->user('api'));
         $user = User::find($id);
-     
-        if(empty($user)){
+        // dd($user);
+        // dd('user request',$request->user('api')->id);
+        // dd('user auth',$user);
+        if( $user->is_deleted === 1){
             return response()->json([
                 "success" => false,
                 "massage" => "Tài khoản không tồn tại."
+            ]);
+        }
+        if($request->user('api')->id === $user->id){
+            return response()->json([
+                "success" => false,
+                "massage" => "Không thể tự xóa tài khoản của mình"
             ]);
         }
         $user->is_delete = 1;
